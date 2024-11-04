@@ -1,1 +1,5 @@
-# vitruve-pokedex
+# Monorepo
+
+## Structure
+- /api: Backend services
+- /ui: Frontend application
