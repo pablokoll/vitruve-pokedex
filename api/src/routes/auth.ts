@@ -9,7 +9,11 @@ type Bindings = {
     JWT_SECRET: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+type Variables = {
+    username: string;
+}
+
+const app = new Hono<{ Bindings: Bindings, Variables: Variables }>();
 
 app.post('/auth/signup', async (c) => {
     const { username, password } = await c.req.json();
@@ -48,7 +52,7 @@ app.use(
         const { JWT_SECRET } = env(c, 'node')
         const verified = await verify(token, JWT_SECRET)
         if(verified?.username) {
-            c.set('username', verified?.username)
+            c.set('username', verified.username)
             return true
         }
         return false
