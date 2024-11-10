@@ -22,7 +22,7 @@ async function createUser(username: string, password: string): Promise<User> {
 
 async function getUserByUsername(username: string): Promise<User | null> {
 	if (!username) {
-		throw new Error(`Username not found`);
+		throw new Error('Username not found');
 	}
 
 	const user = await prisma.user.findUnique({
@@ -253,5 +253,6 @@ export {
 	findPokemonFavorites,
 	getUserByUsername,
 	removePokemonFavorite,
-	updatePokemon,
+	updatePokemon
 };
+

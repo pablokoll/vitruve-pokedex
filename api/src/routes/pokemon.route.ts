@@ -18,7 +18,7 @@ const app = new Hono<{ Variables: Variables }>();
 
 app.get("/", async (c) => {
 	const response = await fetch(
-		'https://pokeapi.co/api/v2/pokemon?limit=50&offset=0',
+		"https://pokeapi.co/api/v2/pokemon?limit=50&offset=0",
 	);
 	const data = await response.json();
 
@@ -28,6 +28,41 @@ app.get("/", async (c) => {
 // Database
 
 app.use("/database/*", bearerAuthMiddleware);
+
+app.get("/database/favorites", async (c) => {
+	const userId = await getContextUserId(c);
+
+	if (!userId) {
+		return c.json({ error: "User not found" }, 404);
+	}
+
+	const favorites = await findPokemonFavorites(userId);
+	return c.json(favorites);
+});
+
+app.post("database/:id/favorite", async (c) => {
+	const pokemonId = c.req.param("id");
+	const userId = await getContextUserId(c);
+
+	if (!pokemonId) {
+		return c.json({ error: "Pokémon ID is required" }, 400);
+	}
+
+	if (!userId) {
+		return c.json({ error: "User not found" }, 404);
+	}
+	const favorites = await findPokemonFavorites(userId);
+	const isFavorite = favorites.some(
+		(pokemon) => pokemon.pokemonId === pokemonId,
+	);
+
+	if (isFavorite) {
+		await removePokemonFavorite(userId, pokemonId);
+		return c.json({ message: "Pokémon removed from favorites" });
+	}
+	await addPokemonFavorite(userId, pokemonId);
+	return c.json({ message: "Pokémon added to favorites" });
+});
 
 app.get("/database", async (c) => {
 	const userId = await getContextUserId(c);
@@ -87,31 +122,6 @@ app.delete("/database/:id", async (c) => {
 	await deletePokemon(id, userId);
 
 	return c.json({ message: "Pokémon deleted successfully" });
-});
-
-app.post("/:id/favorite", async (c) => {
-	const pokemonId = c.req.param("id");
-	const userId = await getContextUserId(c);
-
-	if (!pokemonId) {
-		return c.json({ error: "Pokémon ID is required" }, 400);
-	}
-
-	if (!userId) {
-		return c.json({ error: "User not found" }, 404);
-	}
-	const favorites = await findPokemonFavorites(userId);
-	const isFavorite = favorites.some(
-		(pokemon) => pokemon.pokemonId === pokemonId,
-	);
-
-	if (isFavorite) {
-		await removePokemonFavorite(userId, pokemonId);
-		return c.json({ message: "Pokémon removed from favorites" });
-	} else {
-		await addPokemonFavorite(userId, pokemonId);
-		return c.json({ message: "Pokémon added to favorites" });
-	}
 });
 
 export default app;
