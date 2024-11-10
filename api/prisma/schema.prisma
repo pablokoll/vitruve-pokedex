@@ -7,8 +7,79 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Pokemon {
+  id       String  @id @default(uuid()) @unique
+  name     String
+  height   Float?
+  weight   Float?
+  category String?
+  gender   String?
+
+  sprite   String?
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  types      PokemonType[]
+  abilities  PokemonAbility[]
+  evolutions PokemonEvolution[]
+  stats      PokemonStat[]
+
+  @@map("pokemons")
+}
+
+model PokemonType {
+  id        Int     @id @default(autoincrement())
+  type      String
+  pokemonId String
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@map("pokemon_types")
+}
+
+model PokemonAbility {
+  id        Int     @id @default(autoincrement())
+  ability   String
+  pokemonId String
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@map("pokemon_abilities")
+}
+
+model PokemonEvolution {
+  id          Int     @id @default(autoincrement())
+  evolutionId String
+  pokemonId   String
+  pokemon     Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@map("pokemon_evolutions")
+}
+
+model PokemonStat {
+  id        Int     @id @default(autoincrement())
+  statName  String
+  value     Int
+  pokemonId String
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@map("pokemon_stats")
+}
+
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid()) @unique
   username String @unique
   password String
+
+  pokemons  Pokemon[]
+  favorites Favorite[]
+}
+
+model Favorite {
+  id        Int    @id @default(autoincrement())
+  userId    String
+  pokemonId String
+
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, pokemonId])
 }
