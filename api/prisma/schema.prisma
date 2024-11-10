@@ -8,14 +8,13 @@ generator client {
 }
 
 model Pokemon {
-  id       String  @id @default(uuid()) @unique
+  id       String  @id @unique @default(uuid())
   name     String
   height   Float?
   weight   Float?
   category String?
-  gender   String?
 
-  sprite   String?
+  sprite String?
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
@@ -24,8 +23,18 @@ model Pokemon {
   abilities  PokemonAbility[]
   evolutions PokemonEvolution[]
   stats      PokemonStat[]
+  genders    PokemonGender[]
 
   @@map("pokemons")
+}
+
+model PokemonGender {
+  id        Int     @id @default(autoincrement())
+  gender    String
+  pokemonId String
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@map("pokemon_genders")
 }
 
 model PokemonType {
@@ -47,10 +56,10 @@ model PokemonAbility {
 }
 
 model PokemonEvolution {
-  id          Int     @id @default(autoincrement())
-  evolutionId String
-  pokemonId   String
-  pokemon     Pokemon @relation(fields: [pokemonId], references: [id])
+  id        Int     @id @default(autoincrement())
+  evolution      String
+  pokemonId String
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
 
   @@map("pokemon_evolutions")
 }
@@ -66,7 +75,7 @@ model PokemonStat {
 }
 
 model User {
-  id       String @id @default(uuid()) @unique
+  id       String @id @unique @default(uuid())
   username String @unique
   password String
 
@@ -79,7 +88,7 @@ model Favorite {
   userId    String
   pokemonId String
 
-  user    User    @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, pokemonId])
 }

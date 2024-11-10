@@ -4,7 +4,8 @@ export interface CreatePokemonDto {
 	weight?: number;
 	category?: string;
 	abilities: string[];
-	gender?: string;
+	genders?: string[];
+	evolutions?: string[];
 	sprite?: string;
 	types: string[];
 	stats: PokemonStatDto[];

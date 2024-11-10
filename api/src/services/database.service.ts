@@ -5,8 +5,8 @@ import {
 	PrismaClient,
 	type User,
 } from "@prisma/client";
-import type { CreatePokemonDto } from "../shared/dto/create-pokemon.dto.js";
-import type { UpdatePokemonDto } from "../shared/dto/update-pokemon.dto.js";
+import type { CreatePokemonDto } from "../shared/dto/create-pokemon.dto.ts";
+import type { UpdatePokemonDto } from "../shared/dto/update-pokemon.dto.ts";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +22,7 @@ async function createUser(username: string, password: string): Promise<User> {
 
 async function getUserByUsername(username: string): Promise<User | null> {
 	if (!username) {
-		throw new Error('Username not found');
+		throw new Error("Username not found");
 	}
 
 	const user = await prisma.user.findUnique({
@@ -38,6 +38,12 @@ async function findAllPokemon(userId: string): Promise<Pokemon[]> {
 		where: {
 			userId,
 		},
+		include: {
+			types: true,
+			abilities: true,
+			stats: true,
+			evolutions: true,
+		},
 	});
 	return pokemons;
 }
@@ -52,6 +58,7 @@ async function findPokemon(
 			types: true,
 			abilities: true,
 			stats: true,
+			evolutions: true,
 		},
 	});
 
@@ -77,7 +84,8 @@ async function createPokemon(
 		weight,
 		category,
 		abilities,
-		gender,
+		evolutions,
+		genders,
 		sprite,
 		types,
 		stats,
@@ -90,9 +98,11 @@ async function createPokemon(
 			height,
 			weight,
 			category,
-			gender,
 			sprite,
 			userId,
+			genders: {
+				create: genders?.map((gender: string) => ({ gender })),
+			},
 			types: {
 				create: types.map((type: string) => ({ type })),
 			},
@@ -104,6 +114,9 @@ async function createPokemon(
 					statName: stat.statName,
 					value: stat.value,
 				})),
+			},
+			evolutions: {
+				create: evolutions?.map((evolution: string) => ({ evolution })),
 			},
 		},
 	});
@@ -121,7 +134,8 @@ async function updatePokemon(
 		weight,
 		category,
 		abilities,
-		gender,
+		genders,
+		evolutions,
 		sprite,
 		types,
 		stats,
@@ -134,9 +148,14 @@ async function updatePokemon(
 	if (height !== undefined) data.height = height;
 	if (weight !== undefined) data.weight = weight;
 	if (category !== undefined) data.category = category;
-	if (gender !== undefined) data.gender = gender;
 	if (sprite !== undefined) data.sprite = sprite;
 
+	if (genders !== undefined) {
+		data.genders = {
+			deleteMany: {},
+			create: genders.map((gender: string) => ({ gender })),
+		};
+	}
 	if (types !== undefined) {
 		data.types = {
 			deleteMany: {},
@@ -148,6 +167,12 @@ async function updatePokemon(
 		data.abilities = {
 			deleteMany: {},
 			create: abilities.map((ability: string) => ({ ability })),
+		};
+	}
+	if (evolutions !== undefined) {
+		data.evolutions = {
+			deleteMany: {},
+			create: evolutions.map((evolution: string) => ({ evolution })),
 		};
 	}
 
@@ -168,6 +193,7 @@ async function updatePokemon(
 			types: true,
 			abilities: true,
 			stats: true,
+			evolutions: true,
 		},
 	});
 

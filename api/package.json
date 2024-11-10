@@ -5,11 +5,12 @@
 		"dev": "tsx watch src/index.ts",
 		"format": "npx @biomejs/biome format --write ./",
 		"lint": "npx @biomejs/biome lint --write ./",
-    "check": "npx @biomejs/biome check --write ./"
+		"check": "npx @biomejs/biome check --write ./"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.13.5",
 		"@prisma/client": "^5.22.0",
+		"axios": "^1.7.7",
 		"bcrypt": "^5.1.1",
 		"dotenv": "^16.4.5",
 		"hono": "^4.6.9"
