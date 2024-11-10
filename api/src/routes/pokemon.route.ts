@@ -11,19 +11,15 @@ import {
 	removePokemonFavorite,
 	updatePokemon,
 } from "../services/database.service.js";
+import {
+	findAllPokemonApi,
+	findPokemonDetailsApi,
+	findPokemonListWithDetailsApi,
+} from "../services/pokemon.service.js";
 import type { Variables } from "../shared/types/app.type.js";
 import { getContextUserId } from "../utils/helpers.js";
 
 const app = new Hono<{ Variables: Variables }>();
-
-app.get("/", async (c) => {
-	const response = await fetch(
-		"https://pokeapi.co/api/v2/pokemon?limit=50&offset=0",
-	);
-	const data = await response.json();
-
-	return c.json(data.results);
-});
 
 // Database
 
@@ -123,5 +119,33 @@ app.delete("/database/:id", async (c) => {
 
 	return c.json({ message: "Pokémon deleted successfully" });
 });
+
+// Poke api
+
+app.get("/", async (c) => {
+	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : undefined;
+	const offset = c.req.query("offset") ? Number(c.req.query("offset")) : undefined;
+	const pokemons = await findAllPokemonApi(limit, offset);
+	return c.json(pokemons.results);
+});
+
+app.get("/list", async (c) => {
+	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : undefined;
+	const offset = c.req.query("offset") ? Number(c.req.query("offset")) : undefined;
+	
+	const pokemons = await findPokemonListWithDetailsApi(limit, offset);
+	return c.json(pokemons);
+});
+
+app.get("/:pokemon", async (c) => {
+	const param = c.req.param("pokemon");
+	const pokemon = await findPokemonDetailsApi(param);
+	if(!pokemon) {
+		return c.json(`Pokemon ${param} not found`, 404)
+	}
+	return c.json(pokemon);
+});
+
+
 
 export default app;
