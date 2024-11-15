@@ -36,7 +36,7 @@ app.get("/database/favorites", async (c) => {
 	return c.json(favorites);
 });
 
-app.post("database/:id/favorite", async (c) => {
+app.patch("database/favorite/:id", async (c) => {
 	const pokemonId = c.req.param("id");
 	const userId = await getContextUserId(c);
 
