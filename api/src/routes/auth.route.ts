@@ -14,7 +14,7 @@ app.post("/signup", async (c) => {
 	if (!username || !password || password.length < 8) {
 		return c.json({ error: "Invalid username or password format" }, 400);
 	}
-	const user = await getUserByUsername(username);
+	const user = await getUserByUsername(username, {id: true});
 	if (user) {
 		return c.json({ error: "User already exists" }, 400);
 	}
@@ -28,9 +28,9 @@ app.post("/signup", async (c) => {
 
 app.post("/signin", async (c) => {
 	const { username, password } = await c.req.json();
-	const user = await getUserByUsername(username);
+	const user = await getUserByUsername(username, {id: true, username: true, password: true});
 
-	if (!(user && (await bcrypt.compare(password, user.password)))) {
+	if (!(user && (await bcrypt.compare(password, user.password as string)))) {
 		return c.json({ error: "Invalid credentials" }, 401);
 	}
 
@@ -45,9 +45,10 @@ app.post("/signin", async (c) => {
 
 app.use("/*", bearerAuthMiddleware);
 
-app.get("/me", (c) => {
-	const user = c.get("username");
-	return c.json({ message: "Access granted", user });
+app.get("/me", async (c) => {
+	const username = c.get("username");
+	const user = await getUserByUsername(username, {id: true, username: true});
+	return c.json({ user });
 });
 
 export default app;
