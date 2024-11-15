@@ -26,7 +26,7 @@ async function createUser(
 	return user;
 }
 
-async function getUserByUsername(username: string): Promise<User | null> {
+async function getUserByUsername(username: string, params: {id?: boolean, username?: boolean, password?: boolean}): Promise<Partial<User> | null> {
 	if (!username) {
 		throw new Error("Username not found");
 	}
@@ -35,6 +35,7 @@ async function getUserByUsername(username: string): Promise<User | null> {
 		where: {
 			username: username,
 		},
+		select: params
 	});
 	return user;
 }
