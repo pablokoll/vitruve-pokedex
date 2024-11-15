@@ -1,6 +1,8 @@
 {
-	"name": "api-hono",
+	"name": "api-pokemon",
+	"version": "1.0.0",
 	"type": "module",
+	"private": true,
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"format": "npx @biomejs/biome format --write ./",

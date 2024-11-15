@@ -17,15 +17,15 @@ export interface PokemonResponseData {
 	forms: Form[];
 	game_indices: Index[];
 	height: number;
-	held_items: any[];
+	held_items: unknown[];
 	id: number;
 	is_default: boolean;
 	location_area_encounters: string;
 	moves: Mfe[];
 	name: string;
 	order: number;
-	past_abilities: any[];
-	past_types: any[];
+	past_abilities: unknown[];
+	past_types: unknown[];
 	species: Species;
 	sprites: Sprites;
 	stats: Stat[];
@@ -97,13 +97,13 @@ export interface Species {
 
 export interface Sprites {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 	other: Other;
 	versions: Versions;
 }
@@ -117,14 +117,14 @@ export interface Other {
 
 export interface DreamWorld {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 }
 
 export interface Home {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface OfficialArtwork {
@@ -134,13 +134,13 @@ export interface OfficialArtwork {
 
 export interface Showdown {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface Versions {
@@ -243,35 +243,35 @@ export interface GenerationIv {
 
 export interface DiamondPearl {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface HeartgoldSoulsilver {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface Platinum {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface GenerationV {
@@ -281,24 +281,24 @@ export interface GenerationV {
 export interface BlackWhite {
 	animated: Animated;
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface Animated {
 	back_default: string;
-	back_female: any;
+	back_female: unknown;
 	back_shiny: string;
-	back_shiny_female: any;
+	back_shiny_female: unknown;
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface GenerationVi {
@@ -308,16 +308,16 @@ export interface GenerationVi {
 
 export interface OmegarubyAlphasapphire {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface XY {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface GenerationVii {
@@ -327,14 +327,14 @@ export interface GenerationVii {
 
 export interface Icons {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 }
 
 export interface UltraSunUltraMoon {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 	front_shiny: string;
-	front_shiny_female: any;
+	front_shiny_female: unknown;
 }
 
 export interface GenerationViii {
@@ -343,7 +343,7 @@ export interface GenerationViii {
 
 export interface Icons2 {
 	front_default: string;
-	front_female: any;
+	front_female: unknown;
 }
 
 export interface Stat {
@@ -371,7 +371,7 @@ export interface GenderResponseData {
 	id: number
 	name: string
 	pokemon_species_details: PokemonSpeciesDetail[]
-	required_for_evolution: any[]
+	required_for_evolution: unknown[]
   }
   
   export interface PokemonSpeciesDetail {
@@ -390,9 +390,9 @@ export interface GenderResponseData {
 	color: Color
 	egg_groups: EggGroup[]
 	evolution_chain: EvolutionChain
-	evolves_from_species: any
+	evolves_from_species: unknown
 	flavor_text_entries: FlavorTextEntry[]
-	form_descriptions: any[]
+	form_descriptions: unknown[]
 	forms_switchable: boolean
 	gender_rate: number
 	genera: Genera[]
@@ -516,42 +516,35 @@ export interface GenderResponseData {
   }
   
   export interface EvolutionChainResponseData {
-	baby_trigger_item: any
+	baby_trigger_item: unknown
 	chain: Chain
 	id: number
   }
   
   export interface Chain {
-	evolution_details: any[]
-	evolves_to: EvolvesTo[]
+	evolution_details: EvolutionDetail[]
+	evolves_to: Chain[]
 	is_baby: boolean
 	species: Species3
   }
   
-  export interface EvolvesTo {
-	evolution_details: EvolutionDetail[]
-	evolves_to: EvolvesTo2[]
-	is_baby: boolean
-	species: Species2
-  }
-  
   export interface EvolutionDetail {
-	gender: any
-	held_item: any
-	item: any
-	known_move: any
-	known_move_type: any
-	location: any
-	min_affection: any
-	min_beauty: any
-	min_happiness: any
+	gender: string
+	held_item: string
+	item: string
+	known_move: string
+	known_move_type: string
+	location: string
+	min_affection: string
+	min_beauty: string
+	min_happiness: string
 	min_level: number
 	needs_overworld_rain: boolean
-	party_species: any
-	party_type: any
-	relative_physical_stats: any
+	party_species: string
+	party_type: string
+	relative_physical_stats: string
 	time_of_day: string
-	trade_species: any
+	trade_species: string
 	trigger: Trigger
 	turn_upside_down: boolean
   }
@@ -561,30 +554,24 @@ export interface GenderResponseData {
 	url: string
   }
   
-  export interface EvolvesTo2 {
-	evolution_details: EvolutionDetail2[]
-	evolves_to: any[]
-	is_baby: boolean
-	species: Species
-  }
   
   export interface EvolutionDetail2 {
-	gender: any
-	held_item: any
-	item: any
-	known_move: any
-	known_move_type: any
-	location: any
-	min_affection: any
-	min_beauty: any
-	min_happiness: any
+	gender: string
+	held_item: unknown
+	item: unknown
+	known_move: unknown
+	known_move_type: unknown
+	location: unknown
+	min_affection: unknown
+	min_beauty: unknown
+	min_happiness: unknown
 	min_level: number
 	needs_overworld_rain: boolean
-	party_species: any
-	party_type: any
-	relative_physical_stats: any
+	party_species: unknown
+	party_type: unknown
+	relative_physical_stats: unknown
 	time_of_day: string
-	trade_species: any
+	trade_species: unknown
 	trigger: Trigger2
 	turn_upside_down: boolean
   }
