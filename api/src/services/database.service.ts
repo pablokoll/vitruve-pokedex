@@ -1,20 +1,26 @@
-import {
-	type Favorite,
-	type Pokemon,
-	type Prisma,
-	PrismaClient,
-	type User,
-} from "@prisma/client";
+import { type Prisma, PrismaClient } from "@prisma/client";
 import type { CreatePokemonDto } from "../shared/dto/create-pokemon.dto.ts";
 import type { UpdatePokemonDto } from "../shared/dto/update-pokemon.dto.ts";
+import type {
+	Favorite,
+	Pokemon,
+	User,
+} from "../shared/interfaces/pokemon.interface.js";
 
 const prisma = new PrismaClient();
 
-async function createUser(username: string, password: string): Promise<User> {
+async function createUser(
+	username: string,
+	password: string,
+): Promise<Partial<User>> {
 	const user = await prisma.user.create({
 		data: {
 			username,
 			password,
+		},
+		select: {
+			id: true,
+			username: true,
 		},
 	});
 	return user;
@@ -43,6 +49,7 @@ async function findAllPokemon(userId: string): Promise<Pokemon[]> {
 			abilities: true,
 			stats: true,
 			evolutions: true,
+			genders: true,
 		},
 	});
 	return pokemons;
@@ -59,6 +66,7 @@ async function findPokemon(
 			abilities: true,
 			stats: true,
 			evolutions: true,
+			genders: true,
 		},
 	});
 
@@ -118,6 +126,14 @@ async function createPokemon(
 			evolutions: {
 				create: evolutions?.map((evolution: string) => ({ evolution })),
 			},
+		},
+		include: {
+			abilities: true,
+			evolutions: true,
+			genders: true,
+			stats: true,
+			types: true,
+			user: true,
 		},
 	});
 
@@ -190,19 +206,29 @@ async function updatePokemon(
 		where: { id, userId },
 		data,
 		include: {
-			types: true,
 			abilities: true,
-			stats: true,
 			evolutions: true,
+			genders: true,
+			stats: true,
+			types: true,
+			user: true,
 		},
 	});
 
 	return updatedPokemon;
 }
 
-async function deletePokemon(id: string, userId: string): Promise<Pokemon> {
+async function deletePokemon(
+	id: string,
+	userId: string,
+): Promise<{ id: string; name: string; userId: string | null }> {
 	const deletedPokemon = await prisma.pokemon.delete({
 		where: { id, userId },
+		select: {
+			id: true,
+			name: true,
+			userId: true,
+		},
 	});
 	return deletedPokemon;
 }
