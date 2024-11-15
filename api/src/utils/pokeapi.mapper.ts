@@ -1,35 +1,33 @@
-import type {
-	Pokemon,
-	PokemonAbility,
-	PokemonEvolution,
-	PokemonStat,
-	PokemonType,
-} from "@prisma/client";
+import type { PokemonGender } from "@prisma/client";
 import type {
 	Chain,
 	GenderResponseData,
 	PokemonResponseData,
 	SpeciesResponseData,
 } from "../shared/interfaces/pokeapi.interface.js";
-
-interface PokemonPrisma extends Pokemon {
-	abilities: PokemonAbility[];
-	types: PokemonType[];
-	stats: PokemonStat[];
-	evolutions: PokemonEvolution[];
-}
+import type {
+	Pokemon,
+	PokemonEvolution,
+} from "../shared/interfaces/pokemon.interface.js";
 
 function assignPokemonGender(
 	pokemonName: string,
+	pokemonId: string,
 	pokemonGenders: GenderResponseData[],
-): string[] {
-	const gender = pokemonGenders.filter((gender) => {
+): PokemonGender[] {
+	const genders = pokemonGenders.filter((gender) => {
 		return gender.pokemon_species_details.some(
 			(specie) => specie.pokemon_species.name === pokemonName,
 		);
 	});
 
-	return gender.map((gender) => gender.name);
+	return genders.map((gender) => {
+		return {
+			id: gender.id,
+			gender: gender.name,
+			pokemonId: pokemonId,
+		};
+	});
 }
 
 function assignCategory(
@@ -58,6 +56,9 @@ function groupByEvolutionChain(
 	const evolutionIndex = evolutions.findIndex((evolution) =>
 		evolution.includes(pokemon.name),
 	);
+	if (evolutionIndex === -1) {
+		return [];
+	}
 	return evolutions[evolutionIndex].map((evolution, index) => {
 		return {
 			id: index,
@@ -72,10 +73,9 @@ function mapPokemonsApi(
 	genders: GenderResponseData[],
 	species: SpeciesResponseData[],
 	evolutions: string[][],
-): PokemonPrisma[] {
+): Pokemon[] {
 	return pokemons.map((pokemon) => {
 		const pokemonId = pokemon.id.toString();
-
 		return {
 			id: pokemonId,
 			name: pokemon.name,
@@ -83,7 +83,7 @@ function mapPokemonsApi(
 			weight: pokemon.weight,
 			category: assignCategory(pokemon.name, species),
 			sprite: pokemon.sprites.front_default,
-			gender: assignPokemonGender(pokemon.name, genders),
+			genders: assignPokemonGender(pokemon.name, pokemonId, genders),
 			abilities: pokemon.abilities.map((a) => {
 				return {
 					id: a.slot,
@@ -119,7 +119,9 @@ function extractEvolutionChain(chain: Chain): string[] {
 	evolutionChain.push(currentSpecies);
 
 	for (const nextEvolution of chain.evolves_to) {
-		evolutionChain.push(...extractEvolutionChain(nextEvolution));
+		if(nextEvolution){
+			evolutionChain.push(...extractEvolutionChain(nextEvolution));
+		}
 	}
 
 	return evolutionChain;
