@@ -1,14 +1,14 @@
 import axios, { type AxiosResponse } from "axios";
 import type {
-    EvolutionChainResponseData,
-    GenderResponseData,
-    PokemonResponseData,
-    PokemonsResponseData,
-    SpeciesResponseData,
+	EvolutionChainResponseData,
+	GenderResponseData,
+	PokemonResponseData,
+	PokemonsResponseData,
+	SpeciesResponseData,
 } from "../shared/interfaces/pokeapi.interface.js";
 import {
-    extractEvolutionChain,
-    mapPokemonsApi,
+	extractEvolutionChain,
+	mapPokemonsApi,
 } from "../utils/pokeapi.mapper.js";
 
 const apiUrl = "https://pokeapi.co/api/v2";
@@ -89,10 +89,10 @@ async function findPokemonListWithDetailsApi(limit = 50, offset = 0) {
 }
 
 export {
-    findAllPokemonApi,
-    findPokemonDetailsApi,
-    findPokemonGenderApi,
-    findPokemonListWithDetailsApi,
-    findPokemonSpeciesApi
+	findAllPokemonApi,
+	findPokemonDetailsApi,
+	findPokemonGenderApi,
+	findPokemonListWithDetailsApi,
+	findPokemonSpeciesApi
 };
 
