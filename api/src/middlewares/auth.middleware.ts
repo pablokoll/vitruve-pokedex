@@ -8,11 +8,13 @@ export const bearerAuthMiddleware = bearerAuth({
 			return false;
 		}
 		const { JWT_SECRET } = env(c, "node");
-		const verified = await verify(token, JWT_SECRET);
+		const verified = await verify(token, JWT_SECRET).catch(() => null);
 		if (!verified?.username) {
 			return false;
 		}
 		c.set("username", verified.username);
 		return true;
 	},
+	invalidTokenMessage: "Invalid token",
+	noAuthenticationHeaderMessage: "No authentication header",
 });

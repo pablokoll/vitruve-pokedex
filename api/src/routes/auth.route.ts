@@ -19,8 +19,11 @@ app.post("/signup", async (c) => {
 		return c.json({ error: "User already exists" }, 400);
 	}
 	const hashedPassword = await bcrypt.hash(password, 12);
-	await createUser(username, hashedPassword);
-	return c.json({ message: "User created" });
+	const { JWT_SECRET } = env(c, "node");
+	const userCreated = await createUser(username, hashedPassword);
+	const accessToken = await sign({ username }, JWT_SECRET);
+
+	return c.json({ user: userCreated, token: accessToken });
 });
 
 app.post("/signin", async (c) => {
@@ -34,8 +37,10 @@ app.post("/signin", async (c) => {
 	const { JWT_SECRET } = env(c, "node");
 
 	const accessToken = await sign({ username }, JWT_SECRET);
-
-	return c.json({ accessToken });
+	return c.json({
+		user: { id: user.id, username: user.username },
+		token: accessToken,
+	});
 });
 
 app.use("/*", bearerAuthMiddleware);
