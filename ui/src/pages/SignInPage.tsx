@@ -37,7 +37,7 @@ const SigninPage: React.FC = () => {
 
 		try {
 			signin({username, password});
-			history.push("/pokedex");
+			history.goBack()
 			setUsername("");
 			setPassword("");
 		} catch (error) {

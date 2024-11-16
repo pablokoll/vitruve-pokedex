@@ -1,22 +1,31 @@
 import { IonContent, IonPage } from "@ionic/react";
 import type React from "react";
 import { useState } from "react";
+import { useHistory } from "react-router";
 import { useAuth } from "../providers/AuthProvider";
 import { containerStyle } from "../styles/styles";
 
 const SignupPage: React.FC = () => {
 	const { useSignUp } = useAuth();
 	const signUp = useSignUp();
+	const history = useHistory();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-			signUp({ username, password }, {onError: (error) => {
-				setError("Failed to register user. Please try again.");	
-			}});
-		
+		signUp(
+			{ username, password },
+			{
+				onError: (error) => {
+					setError("Failed to register user. Please try again.");
+				},
+			},
+		);
+		history.goBack();
+		setUsername("");
+		setPassword("");
 	};
 
 	return (

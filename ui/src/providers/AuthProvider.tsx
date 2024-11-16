@@ -13,7 +13,6 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { useHistory } from "react-router";
 import { api } from "../api/api";
 import { me, signin, signup } from "../api/auth";
 import { AUTH_LOCAL_STORAGE_KEY, AUTH_QUERY_KEY } from "../constants";
@@ -48,6 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [auth, setAuth_] = useState(
 		authStorage ? JSON.parse(authStorage) : null,
 	);
+	const queryClient = useQueryClient();
 
 	const setAuth = (auth: AuthResponse | null) => {
 		setAuth_(auth);
@@ -59,9 +59,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		UserForm,
 		unknown
 	> => {
-		const queryClient = useQueryClient();
-		const navigate = useHistory();
-
 		const { mutate: signUpMutation } = useMutation<
 			AuthResponse,
 			Error,
@@ -73,7 +70,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			onSuccess: (data: AuthResponse) => {
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
 				setAuth(data);
-				navigate.push("/");
 			},
 			onError: (error: Error) => {
 				console.error(`Error signing up: ${error.message}`);
@@ -89,9 +85,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		UserForm,
 		unknown
 	> => {
-		const queryClient = useQueryClient();
-		const navigate = useHistory();
-
 		const { mutate: signInMutation } = useMutation<
 			AuthResponse,
 			Error,
@@ -103,7 +96,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			onSuccess: (data: AuthResponse) => {
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
 				setAuth(data);
-				navigate.push("/");
 			},
 			onError: (error: Error) => {
 				console.error(`Error signing up: ${error.message}`);
@@ -114,14 +106,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	};
 
 	const useSignOut = (): (() => void) => {
-		const queryClient = useQueryClient();
-		const navigate = useHistory();
-
 		const onSignOut = useCallback(() => {
 			queryClient.setQueryData([AUTH_QUERY_KEY], null);
 			setAuth(null);
-			navigate.push(navigate.location);
-		}, [navigate, queryClient]);
+		}, []);
 
 		return onSignOut;
 	};
@@ -134,31 +122,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			refetchOnWindowFocus: false,
 			refetchOnReconnect: false,
 			initialData: auth,
+			staleTime: Number.POSITIVE_INFINITY,
 		});
-
-		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-		useEffect(() => {
-			if (auth.token) {
-				api.defaults.headers.common.Authorization = `Bearer ${auth.token}`;
-				localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
-			} else {
-				api.defaults.headers.common.Authorization = null;
-				localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
-			}
-		}, [auth, user]);
 
 		return user ?? null;
 	};
 
+	const user = useUser();
 	useEffect(() => {
-		if (auth?.token) {
+		if (auth?.token && user) {
 			api.defaults.headers.common.Authorization = `Bearer  ${auth.token}`;
 			localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
 		} else {
-			api.defaults.headers.common.Authorization = null
+			api.defaults.headers.common.Authorization = null;
 			localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
 		}
-	}, [auth]);
+	}, [auth, user]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const contextValue = useMemo(
