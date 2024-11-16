@@ -12,7 +12,6 @@ export const bearerAuthMiddleware = bearerAuth({
 		if (!verified?.username) {
 			return false;
 		}
-		console.log(JSON.stringify(verified));
 		c.set("username", verified.username);
 		return true;
 	},

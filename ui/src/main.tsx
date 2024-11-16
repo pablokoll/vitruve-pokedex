@@ -1,16 +1,20 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import { persister, queryClient } from "./queryClient";
 
-const queryClient = new QueryClient();
-
-const container = document.getElementById('root');
+const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </QueryClientProvider>
+	<PersistQueryClientProvider
+		client={queryClient}
+		persistOptions={{ persister }}
+	>
+		<React.StrictMode>
+			<App />
+			<ReactQueryDevtools initialIsOpen />
+		</React.StrictMode>
+	</PersistQueryClientProvider>,
 );
