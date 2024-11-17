@@ -1,4 +1,7 @@
-import type { Pokemon } from "../shared/interfaces/pokemon.interface";
+import type {
+	Pokemon,
+	PokemonFavorite,
+} from "../shared/interfaces/pokemon.interface";
 import { api } from "./api";
 
 export const fetchPokemonList = async (
@@ -21,24 +24,32 @@ export const fetchPokemonByName = async (name: string): Promise<Pokemon> => {
 	return response.data;
 };
 
-export const fetchPokemonsFavorites = async (): Promise<Pokemon[]> => {
+export const fetchUserPokemonsFavorites = async (): Promise<
+	PokemonFavorite[]
+> => {
 	const response = await api.get("/pokemon/database/favorites");
 	return response.data;
 };
 
-export const toggleFavoritePokemon = async (id: string): Promise<Pokemon> => {
-	const response = await api.patch(`/pokemon/database/favorite/${id}`);
+export const toggleUserFavoritePokemon = async (
+	id: string,
+	action?: 'add',
+): Promise<{ message: string }> => {
+	let path = `/pokemon/database/favorite/${id}`;
+	console.log('action is', action);
+	if (action) {
+		path = path.concat(`?action=${action}`);
+	}
+	const response = await api.patch(path);
 	return response.data;
 };
 
-export const fetchPokemonsFromUser = async (): Promise<Pokemon[]> => {
+export const fetchUserPokemons = async (): Promise<Pokemon[]> => {
 	const response = await api.get("/pokemon/database");
 	return response.data;
 };
 
-export const fetchPokemonByIdFromUser = async (
-	id: string,
-): Promise<Pokemon[]> => {
+export const fetchUserPokemonById = async (id: string): Promise<Pokemon[]> => {
 	const response = await api.get(`/pokemon/database/${id}`);
 	return response.data;
 };
@@ -48,7 +59,7 @@ export const addPokemonToUser = async (): Promise<Pokemon> => {
 	return response.data;
 };
 
-export const updatePokemonFromUser = async (): Promise<Pokemon> => {
+export const updateUserPokemon = async (): Promise<Pokemon> => {
 	const response = await api.put("/pokemon/database");
 	return response.data;
 };

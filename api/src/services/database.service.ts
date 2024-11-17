@@ -26,7 +26,10 @@ async function createUser(
 	return user;
 }
 
-async function getUserByUsername(username: string, params: {id?: boolean, username?: boolean, password?: boolean}): Promise<Partial<User> | null> {
+async function getUserByUsername(
+	username: string,
+	params: { id?: boolean; username?: boolean; password?: boolean },
+): Promise<Partial<User> | null> {
 	if (!username) {
 		throw new Error("Username not found");
 	}
@@ -35,25 +38,50 @@ async function getUserByUsername(username: string, params: {id?: boolean, userna
 		where: {
 			username: username,
 		},
-		select: params
+		select: params,
 	});
 	return user;
 }
 
-async function findAllPokemon(userId: string): Promise<Pokemon[]> {
-	const pokemons = await prisma.pokemon.findMany({
+async function countAllPokemons(userId: string): Promise<number> {
+	const count = await prisma.pokemon.count({
+		where: {
+			userId,
+		},
+	});
+	return count;
+}
+
+async function findAllPokemon(
+	userId: string,
+	params?: { ids?: string[], skip?: number, take?: number },
+): Promise<Pokemon[]> {
+	const prismaParams: Prisma.PokemonFindManyArgs = {
 		where: {
 			userId,
 		},
 		include: {
-			types: true,
 			abilities: true,
+			types: true,
 			stats: true,
 			evolutions: true,
 			genders: true,
 		},
-	});
-	return pokemons;
+	};
+	if (params?.ids) {
+		prismaParams.where = prismaParams.where || {};
+		prismaParams.where.id = {
+			in: params.ids,
+		};
+	}
+	if(params?.skip) {
+		prismaParams.skip = params.skip;
+	}
+	if(params?.take) {
+		prismaParams.take = params.take;
+	}
+	const pokemons = await prisma.pokemon.findMany(prismaParams);
+	return pokemons as Pokemon[];
 }
 
 async function findPokemon(
@@ -296,9 +324,7 @@ async function removePokemonFavorite(
 }
 
 export {
-	addPokemonFavorite,
-	countPokemon,
-	createPokemon,
+	addPokemonFavorite, countAllPokemons, countPokemon, createPokemon,
 	createUser,
 	deletePokemon,
 	findAllPokemon,

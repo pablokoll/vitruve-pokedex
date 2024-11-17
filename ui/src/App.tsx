@@ -32,8 +32,8 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 import { css } from "../styled-system/css";
 import FavoritePage from "./pages/FavoritePage";
-import PokedexPage from "./pages/Pokedex";
-import Pokemon from "./pages/Pokemon";
+import PokedexPage from "./pages/PokedexPage";
+import Pokemon from "./pages/PokemonPage";
 import SigninPage from "./pages/SignInPage";
 import SignupPage from "./pages/SignUpPage";
 import TeamPage from "./pages/TeamPage";

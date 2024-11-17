@@ -36,7 +36,6 @@ const PokedexPage: React.FC = () => {
 		},
 		initialPageParam: 0,
 		staleTime: Number.POSITIVE_INFINITY,
-		refetchOnMount: false,
 	});
 
 	useEffect(() => {

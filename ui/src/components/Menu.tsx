@@ -8,8 +8,8 @@ import {
 } from "@ionic/react";
 import type React from "react";
 import { css } from "../../styled-system/css";
+import RouteItem from "../routes/Route";
 import type { NavBarRouteLink } from "../shared/interfaces/routes.interface";
-import RouteItem from "./RouteItem";
 
 interface MenuProps {
 	routes: NavBarRouteLink[];

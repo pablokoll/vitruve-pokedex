@@ -11,7 +11,7 @@ interface PokemonListProps {
 
 const PokemonList: React.FC<PokemonListProps> = ({ pokemonList }) => {
 	const [pokemons, setPokemons] = useState<Pokemon[]>(pokemonList);
-
+	
 	useEffect(() => {
 		setPokemons(pokemonList);
 	}, [pokemonList]);

@@ -23,8 +23,8 @@ app.use("*", async (c, next) => {
 	return middleware(c, next);
 });
 
-app.route("/auth", auth);
-app.route("/pokemon", pokemon);
+app.route("api/auth", auth);
+app.route("api/pokemon", pokemon);
 
 const port = 3000;
 console.log(`Server is running on http://localhost:${port}`);

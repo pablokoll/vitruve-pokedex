@@ -3,8 +3,8 @@ import type React from "react";
 import { css } from "../../styled-system/css";
 import useIsMobile from "../hooks/useMobile";
 import { routesLinks } from "../routes";
+import RouteItem from "../routes/Route";
 import Menu from "./Menu";
-import RouteItem from "./RouteItem";
 
 const Navbar: React.FC = () => {
 	const isMobile = useIsMobile();
