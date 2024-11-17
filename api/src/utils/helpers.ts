@@ -9,3 +9,19 @@ export const getContextUserId = async (c: Context): Promise<string> => {
 	}
 	return user.id as string;
 };
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const separateIdsByType = (array: any[]) => {
+	const { numbers, strings } = array.reduce(
+		(acc, item) => {
+		  if (/^\d+$/.test(item)) {
+			acc.numbers.push(item);
+		  } else {
+			acc.strings.push(item);
+		  }
+		  return acc;
+		},
+		{ numbers: [], strings: [] }
+	  );
+	return { numbers, strings };
+};

@@ -6,10 +6,12 @@ import type {
 	PokemonsResponseData,
 	SpeciesResponseData,
 } from "../shared/interfaces/pokeapi.interface.js";
+import type { Pokemon } from "../shared/interfaces/pokemon.interface.js";
 import {
 	extractEvolutionChain,
 	mapPokemonsApi,
 } from "../utils/pokeapi.mapper.js";
+export type { Pokemon } from "../shared/interfaces/pokemon.interface.js";
 
 const apiUrl = "https://pokeapi.co/api/v2";
 
@@ -23,7 +25,7 @@ async function findAllPokemonApi(
 	return response.data;
 }
 
-async function findPokemonDetailsApi(
+async function findPokemonIdApi(
 	pokemon: string | number,
 ): Promise<PokemonResponseData> {
 	const url = `${apiUrl}/pokemon/${pokemon}`;
@@ -65,33 +67,53 @@ async function findPokemonEvolutionChain(species: SpeciesResponseData[]) {
 	});
 }
 
-async function findPokemonListWithDetailsApi(limit = 50, offset = 0) {
-	const pokemonListData = await findAllPokemonApi(limit, offset);
-	const pokemonDetailsPromises = pokemonListData.results.map((pokemon) =>
-		findPokemonDetailsApi(pokemon.name),
-	);
-	const pokemonDetails = await Promise.all(pokemonDetailsPromises);
-
+async function findPokemonCharacteristicsApi(
+	pokemonDetails: PokemonResponseData[],
+): Promise<Pokemon[]> {
 	const pokemonGenders = await findPokemonGenderApi();
 	const pokemonSpecies = await findPokemonSpeciesApi(
 		pokemonDetails.map((p) => p.id),
 	);
+
 	const pokemonEvolutions = await findPokemonEvolutionChain(pokemonSpecies);
 
 	const pokemons = mapPokemonsApi(
 		pokemonDetails,
 		pokemonGenders,
 		pokemonSpecies,
-        pokemonEvolutions
+		pokemonEvolutions,
 	);
+	return pokemons;
+}
 
+async function findPokemonListWithDetailsApi(
+	limit = 50,
+	offset = 0,
+): Promise<Pokemon[]> {
+	const pokemonListData = await findAllPokemonApi(limit, offset);
+	const pokemonDetailsPromises = pokemonListData.results.map((pokemon) =>
+		findPokemonIdApi(pokemon.name),
+	);
+	const pokemonDetails = await Promise.all(pokemonDetailsPromises);
+
+	const pokemons = await findPokemonCharacteristicsApi(pokemonDetails);
+
+	return pokemons;
+}
+
+async function findPokemonIdsWithDetailsApi(ids: number[]) {
+	const pokemonDetailsPromises = ids.map((id) => findPokemonIdApi(id));
+	const pokemonDetails = await Promise.all(pokemonDetailsPromises);
+
+	const pokemons = await findPokemonCharacteristicsApi(pokemonDetails);
 	return pokemons;
 }
 
 export {
 	findAllPokemonApi,
-	findPokemonDetailsApi,
 	findPokemonGenderApi,
+	findPokemonIdApi,
+	findPokemonIdsWithDetailsApi,
 	findPokemonListWithDetailsApi,
 	findPokemonSpeciesApi
 };
