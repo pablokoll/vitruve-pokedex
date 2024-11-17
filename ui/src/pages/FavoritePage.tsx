@@ -1,4 +1,4 @@
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, IonText } from "@ionic/react";
 import type React from "react";
 import useFavorites from "../hooks/useFavorite";
 import { useAuth } from "../providers/AuthProvider";
@@ -24,10 +24,11 @@ const FavoritePage: React.FC = () => {
 		<IonPage>
 			<IonContent>
 				<div className={containerStyle}>
-					<h1>Favorites</h1>
+					<IonText>Favorites</IonText>
+					
 					{favorites?.map((favorite) => (
 						<div key={favorite.id}>
-							<p>{favorite.id}</p>
+							<p>{favorite.pokemonId}</p>
 						</div>
 					))}
 				</div>
