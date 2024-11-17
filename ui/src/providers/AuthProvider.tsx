@@ -118,9 +118,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		const { data: user } = useQuery<AuthUser | null>({
 			queryKey: [AUTH_QUERY_KEY],
 			queryFn: async (): Promise<AuthUser | null> => me(),
-			refetchOnMount: false,
-			refetchOnWindowFocus: false,
-			refetchOnReconnect: false,
 			initialData: auth,
 			staleTime: Number.POSITIVE_INFINITY,
 		});

@@ -16,7 +16,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
 				<div className="pokemon-card">
 					<h2>{pokemon.name}</h2>
 					<img src={pokemon.sprite} alt={pokemon.name} />
-					{pokemon.types.map((type) => (
+					{pokemon.types?.map((type) => (
 						<span key={type.id}>{type.type}</span>
 					))}
 					<p>id: {pokemon.id}</p>
