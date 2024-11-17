@@ -33,7 +33,6 @@ const useFavorites = (): UseFavoritesResult => {
 		queryFn: fetchUserPokemonsFavorites,
 		enabled: isAuthenticated,
 		retry: 3,
-		initialData: [],
 	});
 
 	const queryClient = useQueryClient();

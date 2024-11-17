@@ -36,7 +36,6 @@ export const toggleUserFavoritePokemon = async (
 	action?: 'add',
 ): Promise<{ message: string }> => {
 	let path = `/pokemon/database/favorite/${id}`;
-	console.log('action is', action);
 	if (action) {
 		path = path.concat(`?action=${action}`);
 	}
