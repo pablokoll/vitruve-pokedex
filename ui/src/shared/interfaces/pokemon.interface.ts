@@ -6,6 +6,12 @@ export interface PokemonCardProps {
 	pokemon: Pokemon;
 }
 
+export interface PokemonFavorite {
+	id: number;
+	userId: string;
+	pokemonId: string;
+}
+
 export interface Pokemon {
 	id: string;
 	name: string;

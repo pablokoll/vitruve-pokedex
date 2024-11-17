@@ -13,6 +13,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import { useHistory } from "react-router";
 import { api } from "../api/api";
 import { me, signin, signup } from "../api/auth";
 import { AUTH_LOCAL_STORAGE_KEY, AUTH_QUERY_KEY } from "../constants";
@@ -47,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [auth, setAuth_] = useState(
 		authStorage ? JSON.parse(authStorage) : null,
 	);
+	const history = useHistory();
 	const queryClient = useQueryClient();
 
 	const setAuth = (auth: AuthResponse | null) => {
@@ -109,6 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		const onSignOut = useCallback(() => {
 			queryClient.setQueryData([AUTH_QUERY_KEY], null);
 			setAuth(null);
+			history.push("/pokedex");
 		}, []);
 
 		return onSignOut;
@@ -130,6 +133,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		if (auth?.token && user) {
 			api.defaults.headers.common.Authorization = `Bearer  ${auth.token}`;
 			localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
+			document.dispatchEvent(new Event("userAuthenticated"))
 		} else {
 			api.defaults.headers.common.Authorization = null;
 			localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);

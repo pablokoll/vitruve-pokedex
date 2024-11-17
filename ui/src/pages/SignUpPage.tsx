@@ -15,15 +15,8 @@ const SignupPage: React.FC = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		signUp(
-			{ username, password },
-			{
-				onError: (error) => {
-					setError("Failed to register user. Please try again.");
-				},
-			},
-		);
-		history.goBack();
+		signUp({ username, password });
+		history.push("/pokedex");
 		setUsername("");
 		setPassword("");
 	};

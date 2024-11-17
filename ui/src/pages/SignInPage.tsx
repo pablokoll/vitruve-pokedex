@@ -37,7 +37,7 @@ const SigninPage: React.FC = () => {
 
 		try {
 			signin({username, password});
-			history.goBack()
+			history.push("/");
 			setUsername("");
 			setPassword("");
 		} catch (error) {

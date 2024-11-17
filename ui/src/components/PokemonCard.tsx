@@ -1,13 +1,25 @@
 import { IonButton, IonRouterLink } from "@ionic/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useFavorites from "../hooks/useFavorite";
 import type { PokemonCardProps } from "../shared/interfaces/pokemon.interface";
 
 const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
-	const [isFavorite, setIsFavorite] = useState(pokemon.isFavorite);
+	const [isFavorite, setIsFavorite] = useState(false);
+	const { favorites, updateFavorite } = useFavorites();
 
-	const handleFavoriteClick = (e: React.MouseEvent) => {
+	useEffect(() => {
+		if (favorites) {
+			const isFavorite = favorites.some(
+				(favorite) => favorite.pokemonId === pokemon.id,
+			);
+			setIsFavorite(isFavorite);
+		}
+	}, [favorites, pokemon.id]);
+
+	const handleFavoriteClick = (e: React.MouseEvent, pokemonId: string) => {
 		e.preventDefault();
 		setIsFavorite(!isFavorite);
+		updateFavorite({ id: pokemonId });
 	};
 
 	return (
@@ -24,7 +36,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
 			</IonRouterLink>
 			<IonButton
 				color={isFavorite ? "danger" : "medium"}
-				onClick={handleFavoriteClick}
+				onClick={(event) => handleFavoriteClick(event, pokemon.id)}
 			>
 				{isFavorite ? "Unfavorite" : "Favorite"}
 			</IonButton>

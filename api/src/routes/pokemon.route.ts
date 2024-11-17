@@ -38,20 +38,20 @@ app.get("/database/favorites", async (c) => {
 
 app.patch("database/favorite/:id", async (c) => {
 	const pokemonId = c.req.param("id");
+	const action = c.req.query("action");
 	const userId = await getContextUserId(c);
 
 	if (!pokemonId) {
 		return c.json({ error: "Pokémon ID is required" }, 400);
 	}
 
-	if (!userId) {
-		return c.json({ error: "User not found" }, 404);
-	}
 	const favorites = await findPokemonFavorites(userId);
 	const isFavorite = favorites.some(
 		(pokemon) => pokemon.pokemonId === pokemonId,
 	);
-
+	if(action === "add" && isFavorite) {
+		return c.json({ message: "Pokémon already in favorites" });
+	}
 	if (isFavorite) {
 		await removePokemonFavorite(userId, pokemonId);
 		return c.json({ message: "Pokémon removed from favorites" });
@@ -62,7 +62,6 @@ app.patch("database/favorite/:id", async (c) => {
 
 app.get("/database", async (c) => {
 	const userId = await getContextUserId(c);
-
 	const pokemons = await findAllPokemon(userId);
 	return c.json(pokemons);
 });
@@ -93,6 +92,9 @@ app.put("/database", async (c) => {
 	const pokemon = await c.req.json();
 	const userId = await getContextUserId(c);
 
+	if (!pokemon.id) {
+		return c.json({ error: "Pokémon ID is required" }, 400);
+	}
 	const check = await countPokemon(pokemon.id, userId);
 
 	if (!check) {
@@ -124,15 +126,19 @@ app.delete("/database/:id", async (c) => {
 
 app.get("/", async (c) => {
 	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : undefined;
-	const offset = c.req.query("offset") ? Number(c.req.query("offset")) : undefined;
+	const offset = c.req.query("offset")
+		? Number(c.req.query("offset"))
+		: undefined;
 	const pokemons = await findAllPokemonApi(limit, offset);
 	return c.json(pokemons.results);
 });
 
 app.get("/list", async (c) => {
 	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : undefined;
-	const offset = c.req.query("offset") ? Number(c.req.query("offset")) : undefined;
-	
+	const offset = c.req.query("offset")
+		? Number(c.req.query("offset"))
+		: undefined;
+
 	const pokemons = await findPokemonListWithDetailsApi(limit, offset);
 	return c.json(pokemons);
 });
@@ -140,12 +146,10 @@ app.get("/list", async (c) => {
 app.get("/:pokemon", async (c) => {
 	const param = c.req.param("pokemon");
 	const pokemon = await findPokemonDetailsApi(param);
-	if(!pokemon) {
-		return c.json(`Pokemon ${param} not found`, 404)
+	if (!pokemon) {
+		return c.json(`Pokemon ${param} not found`, 404);
 	}
 	return c.json(pokemon);
 });
-
-
 
 export default app;
