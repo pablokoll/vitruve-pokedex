@@ -14,6 +14,13 @@ export const fetchPokemonList = async (
 	return response.data;
 };
 
+export const fetchPokemonByIds = async (
+	ids: string[],
+): Promise<Pokemon[]> => {
+	const response = await api.get(`/pokemon/list/ids?find=${ids.join(",")}`);
+	return response.data;
+};
+
 export const fetchPokemonById = async (id: string): Promise<Pokemon> => {
 	const response = await api.get(`/pokemon/${id}`);
 	return response.data;
@@ -33,7 +40,7 @@ export const fetchUserPokemonsFavorites = async (): Promise<
 
 export const toggleUserFavoritePokemon = async (
 	id: string,
-	action?: 'add',
+	action?: "add",
 ): Promise<{ message: string }> => {
 	let path = `/pokemon/database/favorite/${id}`;
 	if (action) {

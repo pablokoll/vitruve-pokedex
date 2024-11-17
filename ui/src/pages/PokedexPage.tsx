@@ -74,7 +74,7 @@ const PokedexPage: React.FC = () => {
 				{isError && <p>Error: {(error as Error).message}</p>}
 				<SearchBar />
 				{visiblePokemons.length ? (
-					<PokemonList pokemonList={visiblePokemons} />
+					<PokemonList pokemonList={visiblePokemons} key={visiblePokemons.length} />
 				) : null}
 				<IonInfiniteScroll
 					onIonInfinite={handleInfiniteScroll}

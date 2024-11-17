@@ -1,9 +1,18 @@
+import type { UseMutationResult } from "@tanstack/react-query";
+
 export interface PokemonListProps {
 	pokemonList: Pokemon[];
 }
 
 export interface PokemonCardProps {
 	pokemon: Pokemon;
+	favorites: PokemonFavorite[];
+	updateFavorite: UseMutationResult<
+		{ message: string },
+		Error,
+		{ id: string; action?: "add" },
+		unknown
+	>["mutate"];
 }
 
 export interface PokemonFavorite {

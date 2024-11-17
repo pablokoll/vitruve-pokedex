@@ -1,11 +1,13 @@
 import { IonButton, IonRouterLink } from "@ionic/react";
 import { useEffect, useState } from "react";
-import useFavorites from "../hooks/useFavorite";
 import type { PokemonCardProps } from "../shared/interfaces/pokemon.interface";
 
-const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
+const PokemonCard: React.FC<PokemonCardProps> = ({
+	pokemon,
+	favorites,
+	updateFavorite,
+}) => {
 	const [isFavorite, setIsFavorite] = useState(false);
-	const { favorites, updateFavorite } = useFavorites();
 
 	useEffect(() => {
 		if (favorites) {
