@@ -9,6 +9,7 @@ import type {
 	Pokemon,
 	PokemonEvolution,
 } from "../shared/interfaces/pokemon.interface.js";
+import { cleanString } from "./helpers.js";
 
 function assignPokemonGender(
 	pokemonName: string,
@@ -49,6 +50,25 @@ function assignCategory(
 	return `${category?.genus.replace(" Pokémon", "")}`;
 }
 
+function assignDescription(
+	pokemonName: string,
+	pokemonSpecies: SpeciesResponseData[],
+): string {
+	const specie = pokemonSpecies.find((specie) => {
+		if (specie.name === pokemonName) {
+			return specie;
+		}
+	});
+
+	const description = specie?.flavor_text_entries.find((flavor) => {
+		if (flavor.language.name === "en") {
+			return flavor;
+		}
+	});
+
+	return cleanString(`${description?.flavor_text}`);
+}
+
 function groupByEvolutionChain(
 	pokemon: PokemonResponseData,
 	evolutions: string[][],
@@ -82,6 +102,7 @@ function mapPokemonsApi(
 			height: pokemon.height,
 			weight: pokemon.weight,
 			category: assignCategory(pokemon.name, species),
+			description: assignDescription(pokemon.name, species),
 			sprite: pokemon.sprites.front_default,
 			genders: assignPokemonGender(pokemon.name, pokemonId, genders),
 			abilities: pokemon.abilities.map((a) => {
@@ -119,7 +140,7 @@ function extractEvolutionChain(chain: Chain): string[] {
 	evolutionChain.push(currentSpecies);
 
 	for (const nextEvolution of chain.evolves_to) {
-		if(nextEvolution){
+		if (nextEvolution) {
 			evolutionChain.push(...extractEvolutionChain(nextEvolution));
 		}
 	}
