@@ -9,11 +9,11 @@ import {
 import { useAuth } from "../providers/AuthProvider";
 import type {
 	Pokemon,
-	PokemonFavorite,
+	PokemonReference,
 } from "../shared/interfaces/pokemon.interface";
 
 interface UseFavoritesResult {
-	favorites: PokemonFavorite[] | undefined;
+	favorites: PokemonReference[] | undefined;
 	updateFavorite: UseMutationResult<
 		{ message: string },
 		Error,
@@ -28,7 +28,7 @@ const useFavorites = (): UseFavoritesResult => {
 		data: favorites,
 		isError,
 		refetch,
-	} = useQuery<PokemonFavorite[]>({
+	} = useQuery<PokemonReference[]>({
 		queryKey: ["pokemons", "favorites"],
 		queryFn: fetchUserPokemonsFavorites,
 		enabled: isAuthenticated,

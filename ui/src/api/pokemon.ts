@@ -1,6 +1,6 @@
 import type {
 	Pokemon,
-	PokemonFavorite,
+	PokemonReference,
 } from "../shared/interfaces/pokemon.interface";
 import { api } from "./api";
 
@@ -14,9 +14,14 @@ export const fetchPokemonList = async (
 	return response.data;
 };
 
-export const fetchPokemonByIds = async (
-	ids: string[],
-): Promise<Pokemon[]> => {
+export const fetchAllPokemons = async (): Promise<
+	{ name: string; url: string }[]
+> => {
+	const response = await api.get("/pokemon");
+	return response.data;
+};
+
+export const fetchPokemonByIds = async (ids: string[]): Promise<Pokemon[]> => {
 	const response = await api.get(`/pokemon/list/ids?find=${ids.join(",")}`);
 	return response.data;
 };
@@ -32,7 +37,7 @@ export const fetchPokemonByName = async (name: string): Promise<Pokemon> => {
 };
 
 export const fetchUserPokemonsFavorites = async (): Promise<
-	PokemonFavorite[]
+	PokemonReference[]
 > => {
 	const response = await api.get("/pokemon/database/favorites");
 	return response.data;
