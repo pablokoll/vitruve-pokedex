@@ -2,14 +2,14 @@ import { IonContent, IonPage, IonText } from "@ionic/react";
 import type React from "react";
 import PokemonList from "../components/PokemonList";
 import useFavorites from "../hooks/useFavorites";
-import { useFetchPokemons } from "../hooks/useFetchPokemons";
+import { usePokemons } from "../hooks/usePokemons";
 import { useAuth } from "../providers/AuthProvider";
 import { containerStyle } from "../styles/styles";
 
 const FavoritePage: React.FC = () => {
 	const { auth } = useAuth();
 	const { favorites } = useFavorites();
-	const { favoritePokemons } = useFetchPokemons(favorites || []);
+	const { pokemons } = usePokemons(favorites || []);
 
 	if (!auth?.user) {
 		return (
@@ -28,8 +28,8 @@ const FavoritePage: React.FC = () => {
 			<IonContent>
 				<div className={containerStyle}>
 					<IonText>Favorites</IonText>
-					{favoritePokemons ? (
-						<PokemonList pokemonList={favoritePokemons} key={favoritePokemons.length}/>
+					{pokemons ? (
+						<PokemonList pokemonList={pokemons} key={pokemons.length}/>
 					) : null}
 				</div>
 			</IonContent>

@@ -6,22 +6,20 @@ import {
 import { fetchPokemonByIds } from "../api/pokemon";
 import type {
 	Pokemon,
-	PokemonFavorite,
+	PokemonReference,
 } from "../shared/interfaces/pokemon.interface";
 
-interface UseFetchPokemonsResult {
-	favoritePokemons: Pokemon[] | undefined;
+interface usePokemonsResult {
+	pokemons: Pokemon[] | undefined;
 }
 
-export const useFetchPokemons = (
-	pokemonsReferences: PokemonFavorite[],
-): UseFetchPokemonsResult => {
+export const usePokemons = (
+	pokemonsReferences: PokemonReference[],
+): usePokemonsResult => {	
 	const queryClient = useQueryClient();
-
-	const favoritePokemonIds = pokemonsReferences?.map((fav) => fav.pokemonId) || [];
-
-	const { data: favoritePokemons } = useQuery<Pokemon[]>({
-		queryKey: ["favoritePokemons", favoritePokemonIds],
+	const pokemonIds = pokemonsReferences?.map((pokemon) => pokemon.pokemonId) || [];
+	const { data: pokemons } = useQuery<Pokemon[]>({
+		queryKey: ["pokemons", pokemonIds],
 		queryFn: async () => {
 			const cachedPokemons: Pokemon[] = [];
 			const missingIds: string[] = [];
@@ -33,14 +31,14 @@ export const useFetchPokemons = (
 			const allCachedPokemons: Pokemon[] =
 				cachedData?.pages?.flat() || [];
 
-			for (const id of favoritePokemonIds) {
+			for (const pokemonId of pokemonIds) {
 				const cachedPokemon = allCachedPokemons.find(
-					(pokemon) => pokemon.id === id,
+					(pokemon) => pokemon.id === pokemonId,
 				);
 				if (cachedPokemon) {
 					cachedPokemons.push(cachedPokemon);
 				} else {
-					missingIds.push(id);
+					missingIds.push(pokemonId);
 				}
 			}
 
@@ -50,10 +48,10 @@ export const useFetchPokemons = (
 
 			return [...cachedPokemons, ...fetchedPokemons];
 		},
-		enabled: favoritePokemonIds.length > 0,
+		enabled: pokemonIds.length > 0,
 	});
 
 	return {
-		favoritePokemons,
+		pokemons,
 	};
 };

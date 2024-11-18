@@ -6,7 +6,7 @@ export interface PokemonListProps {
 
 export interface PokemonCardProps {
 	pokemon: Pokemon;
-	favorites: PokemonFavorite[];
+	favorites: PokemonReference[];
 	updateFavorite: UseMutationResult<
 		{ message: string },
 		Error,
@@ -15,7 +15,7 @@ export interface PokemonCardProps {
 	>["mutate"];
 }
 
-export interface PokemonFavorite {
+export interface PokemonReference {
 	id: number;
 	userId: string;
 	pokemonId: string;

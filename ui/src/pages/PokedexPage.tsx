@@ -31,7 +31,7 @@ const PokedexPage: React.FC = () => {
 		getNextPageParam: (lastPage, allPages) => {
 			if (lastPage === undefined) return undefined;
 			if (Array.isArray(lastPage)) {
-				return lastPage.length === limit ? allPages.length * limit : undefined;
+				return lastPage?.length === limit ? allPages?.length * limit : undefined;
 			}
 		},
 		initialPageParam: 0,

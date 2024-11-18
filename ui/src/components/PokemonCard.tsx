@@ -26,7 +26,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
 
 	return (
 		<>
-			<IonRouterLink routerLink={`/pokedex/${pokemon.id}`}>
+			<IonRouterLink routerLink={`/pokedex/${pokemon.name}`}>
 				<div className="pokemon-card">
 					<h2>{pokemon.name}</h2>
 					<img src={pokemon.sprite} alt={pokemon.name} />
