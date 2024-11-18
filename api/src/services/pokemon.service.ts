@@ -48,9 +48,14 @@ async function findPokemonSpeciesApi(
 ): Promise<SpeciesResponseData[]> {
 	const url = `${apiUrl}/pokemon-species`;
 	const speciesPromises = pokemonsId.map((s) => axios.get(`${url}/${s}`));
-	const pokemonSpecies = await Promise.all(speciesPromises);
+	const pokemonSpecies = await Promise.allSettled(speciesPromises);
 
-	return pokemonSpecies.map((response) => response.data);
+	return pokemonSpecies.map((response) => {
+		if (response.status === "fulfilled") {
+			return response.value.data;
+		}
+		return null;
+	}).filter((s) => s !== null) as SpeciesResponseData[];
 }
 
 async function findPokemonEvolutionChain(species: SpeciesResponseData[]) {
@@ -109,12 +114,16 @@ async function findPokemonIdsWithDetailsApi(ids: number[]) {
 	return pokemons;
 }
 
+async function findPokemonIdWithDetailsApi(id: string) {
+	const pokemonDetails = await findPokemonIdApi(id);
+	const pokemons = await findPokemonCharacteristicsApi([pokemonDetails]);
+	return pokemons[0];
+}
+
 export {
 	findAllPokemonApi,
 	findPokemonGenderApi,
-	findPokemonIdApi,
-	findPokemonIdsWithDetailsApi,
-	findPokemonListWithDetailsApi,
+	findPokemonIdApi, findPokemonIdsWithDetailsApi, findPokemonIdWithDetailsApi, findPokemonListWithDetailsApi,
 	findPokemonSpeciesApi
 };
 

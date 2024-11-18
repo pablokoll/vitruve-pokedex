@@ -26,6 +26,7 @@ model Pokemon {
   genders    PokemonGender[]
 
   @@map("pokemons")
+  @@unique([name, userId])
 }
 
 model PokemonGender {
