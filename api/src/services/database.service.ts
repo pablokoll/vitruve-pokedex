@@ -54,7 +54,7 @@ async function countAllPokemons(userId: string): Promise<number> {
 
 async function findAllPokemon(
 	userId: string,
-	params?: { ids?: string[], skip?: number, take?: number },
+	params?: { ids?: string[]; skip?: number; take?: number },
 ): Promise<Pokemon[]> {
 	const prismaParams: Prisma.PokemonFindManyArgs = {
 		where: {
@@ -74,10 +74,10 @@ async function findAllPokemon(
 			in: params.ids,
 		};
 	}
-	if(params?.skip) {
+	if (params?.skip) {
 		prismaParams.skip = params.skip;
 	}
-	if(params?.take) {
+	if (params?.take) {
 		prismaParams.take = params.take;
 	}
 	const pokemons = await prisma.pokemon.findMany(prismaParams);
@@ -85,11 +85,21 @@ async function findAllPokemon(
 }
 
 async function findPokemon(
-	id: string,
+	{ id, name }: { id?: string; name?: string },
 	userId: string,
 ): Promise<Pokemon | null> {
+	let whereParams: Prisma.PokemonWhereUniqueInput | undefined;
+	if (id) {
+		whereParams = { id, userId };
+	}
+	if (name) {
+		whereParams = { name_userId: { name, userId } };
+	}
+	if(!whereParams) {
+		throw new Error("Invalid parameters");
+	}
 	const pokemon = await prisma.pokemon.findUnique({
-		where: { id, userId },
+		where: whereParams,
 		include: {
 			types: true,
 			abilities: true,
@@ -324,7 +334,10 @@ async function removePokemonFavorite(
 }
 
 export {
-	addPokemonFavorite, countAllPokemons, countPokemon, createPokemon,
+	addPokemonFavorite,
+	countAllPokemons,
+	countPokemon,
+	createPokemon,
 	createUser,
 	deletePokemon,
 	findAllPokemon,

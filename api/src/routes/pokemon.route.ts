@@ -17,13 +17,18 @@ import {
 } from "../services/database.service.js";
 import {
 	findAllPokemonApi,
-	findPokemonIdApi,
+	findPokemonIdWithDetailsApi,
 	findPokemonIdsWithDetailsApi,
 	findPokemonListWithDetailsApi,
 } from "../services/pokemon.service.js";
+import type { PokemonData } from "../shared/interfaces/pokeapi.interface.js";
 import type { Pokemon } from "../shared/interfaces/pokemon.interface.js";
 import type { Variables } from "../shared/types/app.type.js";
-import { getContextUserId, separateIdsByType } from "../utils/helpers.js";
+import {
+	getContextUserId,
+	isUUID,
+	separateIdsByType,
+} from "../utils/helpers.js";
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -74,8 +79,8 @@ app.get("/database", async (c) => {
 app.get("/database/:id", async (c) => {
 	const { id } = c.req.param();
 	const userId = await getContextUserId(c);
-
-	const pokemon = await findPokemon(id, userId);
+	const whereParams = isUUID(id) ? { id } : { name: id };
+	const pokemon = await findPokemon(whereParams, userId);
 
 	if (!pokemon) {
 		return c.json({ error: "Pokémon not found" }, 404);
@@ -131,12 +136,46 @@ app.use("/*", jwtUserMiddleware);
 
 // Poke api
 app.get("/", async (c) => {
-	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : undefined;
-	const offset = c.req.query("offset")
-		? Number(c.req.query("offset"))
-		: undefined;
-	const pokemons = await findAllPokemonApi(limit, offset);
-	return c.json(pokemons.results);
+	const limit = c.req.query("limit") ? Number(c.req.query("limit")) : -1;
+	const offset = c.req.query("offset") ? Number(c.req.query("offset")) : 0;
+
+	const pokemons: PokemonData[] = [];
+	let totalDatabasePokemons = 0;
+
+	if (c.get("username")) {
+		const userId = await getContextUserId(c);
+		totalDatabasePokemons = await countAllPokemons(userId);
+
+		const dbSkip = Math.min(offset, totalDatabasePokemons);
+		const dbTake = Math.min(limit, totalDatabasePokemons - dbSkip);
+
+		if (dbTake > 0 || dbTake === -1) {
+			const pokemonsDatabase = await findAllPokemon(userId, {
+				skip: dbSkip,
+				take: dbTake > -1 ? dbTake : undefined,
+			})
+			const pokemonsDb = pokemonsDatabase.map((pokemon) => {
+				return {
+					name: pokemon.name,
+					url: `/pokemon/${pokemon.id}`
+				}
+			})
+			pokemons.push(...pokemonsDb);
+		}
+	}
+
+	const remainingOffset = Math.max(0, offset - totalDatabasePokemons);
+	const remainingLimit = Math.max(0, limit - pokemons.length);
+
+	if (remainingLimit > 0 || limit === -1) {
+		const pokemonsApi = await findAllPokemonApi(
+			limit > -1 ? remainingLimit : -1,
+			remainingOffset,
+		);
+		pokemons.push(...pokemonsApi.results);
+	}
+
+	return c.json(pokemons);
 });
 
 app.get("/list", async (c) => {
@@ -197,7 +236,7 @@ app.get("/list/ids", async (c) => {
 
 app.get("/:pokemon", async (c) => {
 	const param = c.req.param("pokemon");
-	const pokemon = await findPokemonIdApi(param);
+	const pokemon = await findPokemonIdWithDetailsApi(param);
 	if (!pokemon) {
 		return c.json(`Pokemon ${param} not found`, 404);
 	}
