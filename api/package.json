@@ -1,27 +1,33 @@
 {
-	"name": "api-pokemon",
-	"version": "1.0.0",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"dev": "tsx watch src/index.ts",
-		"format": "npx @biomejs/biome format --write ./",
-		"lint": "npx @biomejs/biome lint --write ./",
-		"check": "npx @biomejs/biome check --write ./"
-	},
-	"dependencies": {
-		"@hono/node-server": "^1.13.5",
-		"@prisma/client": "^5.22.0",
-		"axios": "^1.7.7",
-		"bcrypt": "^5.1.1",
-		"dotenv": "^16.4.5",
-		"hono": "^4.6.9"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@types/bcrypt": "^5.0.2",
-		"@types/node": "^20.11.17",
-		"prisma": "^5.22.0",
-		"tsx": "^4.7.1"
-	}
+    "name": "api-pokemon",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "tsc && cp -r prisma dist/prisma && npm run prisma:generate && npm run prisma:migrate:prod",
+        "start": "node dist/index.js",
+        "dev": "tsx watch src/index.ts",
+        "prisma:generate": "prisma generate",
+        "prisma:migrate:dev": "prisma migrate dev",
+        "prisma:migrate:prod": "prisma migrate deploy",
+        "format": "npx @biomejs/biome format --write ./",
+        "lint": "npx @biomejs/biome lint --write ./",
+        "check": "npx @biomejs/biome check --write ./"
+    },
+    "dependencies": {
+        "@hono/node-server": "^1.13.5",
+        "@prisma/client": "^5.22.0",
+        "axios": "^1.7.7",
+        "bcrypt": "^5.1.1",
+        "dotenv": "^16.4.5",
+        "hono": "^4.6.9"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@types/bcrypt": "^5.0.2",
+        "@types/node": "^20.11.17",
+        "prisma": "^5.22.0",
+        "tsx": "^4.7.1",
+        "typescript": "^5.6.3"
+    }
 }

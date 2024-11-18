@@ -30,7 +30,7 @@ app.route("auth", auth);
 app.route("pokemon", pokemon);
 
 const port = 3000;
-// console.log(`Server is running on http://localhost:${port}`);
+console.log(`Server is running on http://localhost:${port}`);
 
 serve({
 	fetch: app.fetch,

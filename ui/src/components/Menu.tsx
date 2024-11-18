@@ -30,12 +30,12 @@ const Menu: React.FC<MenuProps> = ({ routes }) => {
 			<IonContent className={css({ padding: "10px" })}>
 				<IonList className={css({ display: "flex", flexDirection: "column" })}>
 					{routes.map((route, index) => (
+						// TODO: Add onClick and onKeyUp event handlers
 						<div
 							key={`${route.path}-${index}`}
-							onClick={() => console.log("pablo")}
+							onClick={() => {}}
 							onKeyUp={(e) => {
 								if (e.key === "Enter" || e.key === " ") {
-									console.log("pablo");
 								}
 							}}
 						>

@@ -26,5 +26,6 @@ lerna-debug.log*
 
 # misc
 .DS_Store
-prisma/database/*
+/prisma/database/
 .vscode
+/dist
