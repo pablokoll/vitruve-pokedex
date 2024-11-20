@@ -32,7 +32,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
 			...prevState,
 			[name]: value,
 		}));
-		('formData in CustomForm:', formData);
 	};
 
 	const handleSubmit = (e: FormEvent) => {

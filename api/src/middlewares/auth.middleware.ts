@@ -22,7 +22,7 @@ export const bearerAuthMiddleware = bearerAuth({
 
 export const jwtUserMiddleware = async (c: Context, next: Next) => {
 	const { JWT_SECRET } = env(c, "node");
-	const token = c.req.header("Authorization")?.split("  ")[1];
+	const token = c.req.header("Authorization")?.split(" ")[1];
 
 	if (token) {
 		try {

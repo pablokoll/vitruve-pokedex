@@ -185,7 +185,6 @@ app.get("/list", async (c) => {
 
 	const pokemons: Pokemon[] = [];
 	let totalDatabasePokemons = 0;
-	console.log(c.get("username"));
 	if (c.get("username")) {
 		const userId = await getContextUserId(c);
 		totalDatabasePokemons = await countAllPokemons(userId);

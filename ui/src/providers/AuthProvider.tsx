@@ -1,7 +1,6 @@
 import {
 	type UseMutateFunction,
 	useMutation,
-	useQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
 import type React from "react";
@@ -9,18 +8,14 @@ import {
 	createContext,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useState,
 } from "react";
 import { useHistory } from "react-router";
 import { api } from "../api/api";
-import { me, signin, signup } from "../api/auth";
+import { signin, signup } from "../api/auth";
 import { AUTH_LOCAL_STORAGE_KEY, AUTH_QUERY_KEY } from "../constants";
-import type {
-	AuthResponse,
-	AuthUser,
-} from "../shared/interfaces/auth.interface";
+import type { AuthResponse } from "../shared/interfaces/auth.interface";
 
 interface UserForm {
 	username: string;
@@ -34,7 +29,6 @@ interface AuthContextType {
 	useSignUp: () => UseMutateFunction<AuthResponse, unknown, UserForm, unknown>;
 	useSignIn: () => UseMutateFunction<AuthResponse, unknown, UserForm, unknown>;
 	useSignOut: () => () => void;
-	useUser: () => AuthUser | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,6 +64,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			mutationFn: ({ username, password }: UserForm) =>
 				signup(username, password),
 			onSuccess: (data: AuthResponse) => {
+				api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+				localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
+				document.dispatchEvent(new Event("userAuthenticated"));
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
 				setAuth(data);
 			},
@@ -96,6 +93,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			mutationFn: ({ username, password }: UserForm) =>
 				signin(username, password),
 			onSuccess: (data: AuthResponse) => {
+				api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+				localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
+				document.dispatchEvent(new Event("userAuthenticated"));
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
 				setAuth(data);
 			},
@@ -109,38 +109,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	const useSignOut = (): (() => void) => {
 		const onSignOut = useCallback(() => {
+			api.defaults.headers.common.Authorization = null;
+			localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
 			queryClient.setQueryData([AUTH_QUERY_KEY], null);
 			setAuth(null);
-			history.push("/pokedex");
+			document.dispatchEvent(new Event("userNotAuthenticated"));
 		}, []);
 
 		return onSignOut;
 	};
 
-	const useUser = (): AuthUser | null => {
-		const { data: user } = useQuery<AuthUser | null>({
-			queryKey: [AUTH_QUERY_KEY],
-			queryFn: async (): Promise<AuthUser | null> => me(),
-			initialData: auth,
-			staleTime: Number.POSITIVE_INFINITY,
-		});
-
-		return user ?? null;
-	};
-
-	const user = useUser();
-	useEffect(() => {
-		if (auth?.token && user) {
-			api.defaults.headers.common.Authorization = `Bearer  ${auth.token}`;
-			localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
-			document.dispatchEvent(new Event("userAuthenticated"))
-		} else {
-			api.defaults.headers.common.Authorization = null;
-			localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
-		}
-	}, [auth, user]);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const contextValue = useMemo(
 		() => ({
 			auth,
@@ -149,7 +127,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			useSignUp,
 			useSignIn,
 			useSignOut,
-			useUser,
 		}),
 		[auth],
 	);

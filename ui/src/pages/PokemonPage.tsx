@@ -33,10 +33,11 @@ const PokemonPage: React.FC = () => {
 						<>
 							<p>id: {pokemon.id}</p>
 							<h1>{pokemon.name}</h1>
-							<img src={pokemon.sprite} alt={pokemon.name} />
+							<img src={pokemon.sprite ?? "https://cdn.dribbble.com/users/6245075/screenshots/16269935/pokeball.png"} alt={pokemon.name} height={150} width={150} />
 							<p>height: {pokemon.height}</p>
 							<p>weight: {pokemon.weight}</p>
 							<p>category: {pokemon.category}</p>
+							<p>description: {pokemon.description}</p>
 							{pokemon.types?.map((type) => (
 								<span key={type.id}>{type.type}</span>
 							))}
