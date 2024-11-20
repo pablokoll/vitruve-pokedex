@@ -1,3 +1,5 @@
+import type { CreatePokemonDto } from "../shared/dto/create-pokemon.dto";
+import type { UpdatePokemonDto } from "../shared/dto/update-pokemon.dto";
 import type {
 	Pokemon,
 	PokemonReference,
@@ -23,6 +25,13 @@ export const fetchAllPokemons = async (): Promise<
 
 export const fetchPokemonByIds = async (ids: string[]): Promise<Pokemon[]> => {
 	const response = await api.get(`/pokemon/list/ids?find=${ids.join(",")}`);
+	return response.data;
+};
+
+export const fetchPokemonSearchByName = async (
+	name: string,
+): Promise<Pokemon[]> => {
+	const response = await api.get(`/pokemon/search/${name}`);
 	return response.data;
 };
 
@@ -65,12 +74,16 @@ export const fetchUserPokemonById = async (id: string): Promise<Pokemon[]> => {
 	return response.data;
 };
 
-export const addPokemonToUser = async (): Promise<Pokemon> => {
-	const response = await api.post("/pokemon/database");
+export const addUserPokemon = async (
+	newPokemon: CreatePokemonDto,
+): Promise<Pokemon> => {
+	const response = await api.post("/pokemon/database", newPokemon);
 	return response.data;
 };
 
-export const updateUserPokemon = async (): Promise<Pokemon> => {
-	const response = await api.put("/pokemon/database");
+export const updateUserPokemon = async (
+	updatePokemon: UpdatePokemonDto,
+): Promise<Pokemon> => {
+	const response = await api.put("/pokemon/database", updatePokemon);
 	return response.data;
 };

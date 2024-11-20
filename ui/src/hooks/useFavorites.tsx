@@ -34,7 +34,7 @@ const useFavorites = (): UseFavoritesResult => {
 		enabled: isAuthenticated,
 		retry: 3,
 	});
-
+	
 	const queryClient = useQueryClient();
 
 	const { mutate: toggleFavorite } = useMutation<
@@ -86,7 +86,7 @@ const useFavorites = (): UseFavoritesResult => {
 		if (!isAuthenticated) {
 			queryClient.setQueryData(["pokemons", "favorites"], []);
 		}
-	});
+	}, [isAuthenticated, queryClient]);
 
 	return {
 		favorites,

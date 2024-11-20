@@ -29,9 +29,17 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
 			<IonRouterLink routerLink={`/pokedex/${pokemon.name}`}>
 				<div className="pokemon-card">
 					<h2>{pokemon.name}</h2>
-					<img src={pokemon.sprite} alt={pokemon.name} />
+					<img
+						src={
+							pokemon.sprite ??
+							"https://cdn.dribbble.com/users/6245075/screenshots/16269935/pokeball.png"
+						}
+						height={150}
+						width={150}
+						alt={pokemon.name}
+					/>
 					{pokemon.types?.map((type) => (
-						<span key={type.id}>{type.type}</span>
+						<span key={`${pokemon.name}-${type.id}`}>{type.type}</span>
 					))}
 					<p>id: {pokemon.id}</p>
 				</div>

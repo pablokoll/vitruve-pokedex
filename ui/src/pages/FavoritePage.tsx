@@ -8,7 +8,7 @@ import { containerStyle } from "../styles/styles";
 
 const FavoritePage: React.FC = () => {
 	const { auth } = useAuth();
-	const { favorites } = useFavorites();
+	const { favorites, updateFavorite } = useFavorites();
 	const { pokemons } = usePokemons(favorites || []);
 
 	if (!auth?.user) {
@@ -29,7 +29,12 @@ const FavoritePage: React.FC = () => {
 				<div className={containerStyle}>
 					<IonText>Favorites</IonText>
 					{pokemons ? (
-						<PokemonList pokemonList={pokemons} key={pokemons.length}/>
+						<PokemonList
+							key={pokemons.length}
+							pokemonList={pokemons}
+							favorites={favorites}
+							updateFavorite={updateFavorite}
+						/>
 					) : null}
 				</div>
 			</IonContent>

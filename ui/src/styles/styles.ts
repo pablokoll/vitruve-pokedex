@@ -17,4 +17,5 @@ export const containerStyle = css({
   justifyContent: "start",
   padding: "10",
   height: "100%",
+  minHeight: "100vh",
 });
