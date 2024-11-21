@@ -16,7 +16,6 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ routes }) => {
-
 	return (
 		<IonMenu contentId="main-content" swipe-gesture={true}>
 			<IonHeader
@@ -39,10 +38,7 @@ const Menu: React.FC<MenuProps> = ({ routes }) => {
 								}
 							}}
 						>
-							<RouteItem
-								key={route.path}
-								route={route}
-							/>
+							<RouteItem key={route.path} route={route} />
 						</div>
 					))}
 				</IonList>
