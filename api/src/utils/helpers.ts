@@ -10,24 +10,27 @@ export const getContextUserId = async (c: Context): Promise<string> => {
 	return user.id as string;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const separateIdsByType = (array: any[]) => {
+export const separateIdsByType = (array: string[]) => {
 	const { numbers, strings } = array.reduce(
 		(acc, item) => {
-		  if (/^\d+$/.test(item)) {
-			acc.numbers.push(item);
-		  } else {
-			acc.strings.push(item);
-		  }
-		  return acc;
+			if (/^\d+$/.test(item)) {
+				const number = Number.parseInt(item, 10);
+				acc.numbers.push(number);
+			} else {
+				acc.strings.push(item);
+			}
+			return acc;
 		},
-		{ numbers: [], strings: [] }
-	  );
+		{ numbers: [] as number[], strings: [] as string[] },
+	);
 	return { numbers, strings };
 };
 
-export const isUUID = (str: string): boolean => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str);
+export const isUUID = (str: string): boolean =>
+	/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+		str,
+	);
 
 export const cleanString = (input: string): string => {
-	return input.replace(/[\n\f\r\t\v]/g, ' ').trim();
-  };
+	return input.replace(/[\n\f\r\t\v]/g, " ").trim();
+};
