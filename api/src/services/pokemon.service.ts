@@ -39,7 +39,6 @@ async function findPokemonGenderApi(): Promise<GenderResponseData[]> {
 	const genders = [1, 2, 3];
 	const gendersPromises = genders.map((g) => axios.get(`${url}/${g}`));
 	const pokemonsGender = await Promise.all(gendersPromises);
-
 	return pokemonsGender.map((response) => response.data);
 }
 

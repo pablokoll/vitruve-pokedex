@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useAbilities } from "../hooks/useAbilities";
 import useAddPokemon from "../hooks/useAddPokemon";
+import { useGenders } from "../hooks/useGenders";
 import { useTypes } from "../hooks/useTypes";
 import type {
 	CreatePokemonDto,
@@ -37,6 +38,7 @@ const AddPokemonModal = ({
 	});
 	const { types } = useTypes();
 	const { abilities } = useAbilities();
+	const { genders } = useGenders();
 
 	const { addPokemon, isSuccess, isPending, isError, error } = useAddPokemon();
 
@@ -84,6 +86,10 @@ const AddPokemonModal = ({
 		(field) => field.props.name === "abilities",
 	);
 	fields[abilitiesIndex].props.options = abilities || [];
+	const gendersIndex = fields.findIndex(
+		(field) => field.props.name === "genders",
+	);
+	fields[gendersIndex].props.options = genders || [];
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -222,7 +228,7 @@ const fields: Field[] = [
 			inputmode: "text",
 			multiple: true,
 			errorText: "Error gender",
-			options: ["Male", "Female"],
+			options: [],
 		},
 	},
 	{

@@ -105,3 +105,8 @@ export const fetchPokemonAbilities = async (): Promise<string[]> => {
 	const response = await api.get("/pokemon/abilities");
 	return response.data;
 };
+
+export const fetchPokemonGenders = async (): Promise<string[]> => {
+	const response = await api.get("/pokemon/genders");
+	return response.data;
+};

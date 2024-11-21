@@ -18,6 +18,7 @@ import {
 import {
 	findAllPokemonApi,
 	findPokemonAbilities,
+	findPokemonGenderApi,
 	findPokemonIdWithDetailsApi,
 	findPokemonIdsWithDetailsApi,
 	findPokemonListWithDetailsApi,
@@ -265,6 +266,11 @@ app.get("/types", async (c) => {
 app.get("/abilities", async (c) => {
 	const types = await findPokemonAbilities();
 	return c.json(types);
+});
+
+app.get("/genders", async (c) => {
+	const genders = await findPokemonGenderApi();
+	return c.json(genders.map((gender) => gender.name));
 });
 
 app.get("/:pokemon", async (c) => {
