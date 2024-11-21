@@ -35,7 +35,7 @@ const FavoritePage: React.FC = () => {
 							favorites={favorites}
 							updateFavorite={updateFavorite}
 						/>
-					) : null}
+					) : <p>Add pokemons favorites to the list</p>}
 				</div>
 			</IonContent>
 		</IonPage>

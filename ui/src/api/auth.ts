@@ -26,9 +26,6 @@ export const signin = async (
 export const me = async (): Promise<AuthResponse | null> => {
 	try {
 		const response = await api.get("/auth/me");
-		if (response.status === 401) {
-			return null;
-		}
 		return response.data;
 	} catch (error) {
 		return null;

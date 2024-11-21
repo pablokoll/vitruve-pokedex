@@ -25,17 +25,7 @@ const AddPokemonModal = ({
 }: {
 	dismiss: (data?: CustomField, role?: string) => void;
 }) => {
-	const [formData, setFormData] = useState<Record<string, CustomField>>({
-		statsNames: [
-			"HP",
-			"Attack",
-			"Defense",
-			"Special Attack",
-			"Special Defense",
-			"Speed",
-		],
-		statsValues: [1, 1, 1, 1, 1, 1],
-	});
+	const [formData, setFormData] = useState<Record<string, CustomField>>({});
 	const { types } = useTypes();
 	const { abilities } = useAbilities();
 	const { genders } = useGenders();
