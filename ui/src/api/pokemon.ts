@@ -40,11 +40,6 @@ export const fetchPokemonById = async (id: string): Promise<Pokemon> => {
 	return response.data;
 };
 
-export const fetchPokemonByName = async (name: string): Promise<Pokemon> => {
-	const response = await api.get(`/pokemon/${name}`);
-	return response.data;
-};
-
 export const fetchUserPokemonsFavorites = async (): Promise<
 	PokemonReference[]
 > => {
@@ -66,11 +61,6 @@ export const toggleUserFavoritePokemon = async (
 
 export const fetchUserPokemons = async (): Promise<Pokemon[]> => {
 	const response = await api.get("/pokemon/database");
-	return response.data;
-};
-
-export const fetchUserPokemonById = async (id: string): Promise<Pokemon[]> => {
-	const response = await api.get(`/pokemon/database/${id}`);
 	return response.data;
 };
 
@@ -103,5 +93,10 @@ export const fetchPokemonTypes = async (): Promise<string[]> => {
 
 export const fetchPokemonAbilities = async (): Promise<string[]> => {
 	const response = await api.get("/pokemon/abilities");
+	return response.data;
+};
+
+export const fetchPokemonGenders = async (): Promise<string[]> => {
+	const response = await api.get("/pokemon/genders");
 	return response.data;
 };

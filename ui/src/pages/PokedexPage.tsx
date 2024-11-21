@@ -6,7 +6,6 @@ import {
 	IonPage,
 	useIonModal,
 } from "@ionic/react";
-import type { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { css } from "../../styled-system/css";
@@ -43,11 +42,6 @@ const PokedexPage: React.FC = () => {
 
 	function openModal() {
 		present({
-			onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
-				if (ev.detail.role === "confirm") {
-					
-				}
-			},
 			breakpoints: [1],
 			showBackdrop: false,
 			focusTrap: true,
@@ -103,11 +97,12 @@ const PokedexPage: React.FC = () => {
 						setIsSearching={setIsSearching}
 					/>
 					<IonButton
+						className={css({ position: "fixed", bottom: 10, right: 10, zIndex: 1 })}
 						disabled={!auth?.token}
 						expand="block"
 						onClick={() => openModal()}
 					>
-						Open
+						Create your own Pokemon
 					</IonButton>
 					{isSearching ? (
 						<PokemonList

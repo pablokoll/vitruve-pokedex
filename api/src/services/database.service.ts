@@ -265,7 +265,6 @@ async function deletePokemon(
 	id: string,
 	userId: string,
 ): Promise<{ id: string; name: string; userId: string | null }> {
-	console.log("Deleting pokemon", id, userId);
 	await prisma.pokemonEvolution.deleteMany({
 		where: { pokemonId: id },
 	});
