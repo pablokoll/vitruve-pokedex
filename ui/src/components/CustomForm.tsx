@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonPage } from "@ionic/react";
+import { IonButton } from "@ionic/react";
 import type { AxiosError } from "axios";
 import type React from "react";
 import type { FormEvent } from "react";
@@ -13,11 +13,12 @@ interface CustomFormProps {
 		value: React.SetStateAction<Record<string, CustomField>>,
 	) => void;
 	handleFormSubmit: (e: FormEvent) => void;
-	hookResult: {
+	hookResult?: {
 		isPending: boolean;
 		isError: boolean;
 		error: AxiosError | null;
 	};
+	buttonName: string;
 }
 
 const CustomForm: React.FC<CustomFormProps> = ({
@@ -26,6 +27,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
 	setFormData,
 	handleFormSubmit,
 	hookResult,
+	buttonName,
 }) => {
 	const handleChange = (name: string, value: CustomField) => {
 		setFormData((prevState: Record<string, CustomField>) => ({
@@ -40,34 +42,26 @@ const CustomForm: React.FC<CustomFormProps> = ({
 	};
 
 	return (
-		<IonPage>
-			<IonContent>
-				<form onSubmit={(e) => handleSubmit(e)}>
-					{fields.map((field) => (
-						<CustomInput
-							key={field.label}
-							field={field}
-							value={formData[field.props.name] || ""}
-							onChange={handleChange}
-						/>
-					))}
-					<IonButton
-						expand="full"
-						type="submit"
-						disabled={hookResult.isPending}
-					>
-						{hookResult.isPending ? "Adding.." : "Add Pokemon"}
-					</IonButton>
-					{hookResult.isError && (
-						<>
-							{" "}
-							<p>Error adding Pokemon. Please try again.</p>
-							<p>{hookResult.error?.response?.data as string}</p>
-						</>
-					)}
-				</form>
-			</IonContent>
-		</IonPage>
+		<form onSubmit={(e) => handleSubmit(e)}>
+			{fields.map((field) => (
+				<CustomInput
+					key={field.label}
+					field={field}
+					value={formData[field.props.name] || ""}
+					onChange={handleChange}
+				/>
+			))}
+			<IonButton expand="full" type="submit" disabled={hookResult?.isPending}>
+				{hookResult?.isPending ? `${buttonName}..` : `${buttonName}`}
+			</IonButton>
+			{hookResult?.isError && (
+				<>
+					{" "}
+					<p>Error submitting form. Please try again.</p>
+					<p>{hookResult?.error?.response?.data as string}</p>
+				</>
+			)}
+		</form>
 	);
 };
 

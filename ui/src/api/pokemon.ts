@@ -87,3 +87,21 @@ export const updateUserPokemon = async (
 	const response = await api.put("/pokemon/database", updatePokemon);
 	return response.data;
 };
+
+export const deleteUserPokemon = async (
+	id: string,
+	name: string,
+): Promise<{ message: string }> => {
+	const response = await api.delete(`/pokemon/database/${id}`);
+	return response.data;
+};
+
+export const fetchPokemonTypes = async (): Promise<string[]> => {
+	const response = await api.get("/pokemon/types");
+	return response.data;
+};
+
+export const fetchPokemonAbilities = async (): Promise<string[]> => {
+	const response = await api.get("/pokemon/abilities");
+	return response.data;
+};

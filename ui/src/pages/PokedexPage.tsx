@@ -15,6 +15,7 @@ import PokemonList from "../components/PokemonList";
 import SearchBar from "../components/SearchBar";
 import useFavorites from "../hooks/useFavorites";
 import usePokemonsInfinite from "../hooks/usePokemonsInfinite";
+import { useAuth } from "../providers/AuthProvider";
 import type { Pokemon } from "../shared/interfaces/pokemon.interface";
 import { containerStyle } from "../styles/styles";
 
@@ -25,6 +26,7 @@ const PokedexPage: React.FC = () => {
 	const [isSearching, setIsSearching] = useState<boolean>(false);
 	const [searchPokemons, setSearchPokemons] = useState<Pokemon[]>([]);
 	const { favorites, updateFavorite } = useFavorites();
+	const { auth } = useAuth();
 	const {
 		data,
 		fetchNextPage,
@@ -43,7 +45,7 @@ const PokedexPage: React.FC = () => {
 		present({
 			onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
 				if (ev.detail.role === "confirm") {
-					console.log("Pokemon created: ", ev.detail.data);
+					
 				}
 			},
 			breakpoints: [1],
@@ -59,7 +61,10 @@ const PokedexPage: React.FC = () => {
 			setAllPokemons(newPokemons);
 			if (!isFetchingNextPage) {
 				setVisiblePokemons((prevVisiblePokemons) => {
-					if(prevVisiblePokemons[0]?.id !== newPokemons[0]?.id) {
+					if (
+						prevVisiblePokemons[prevVisiblePokemons.length - 1]?.id !==
+						newPokemons[newPokemons.length - 1]?.id
+					) {
 						return newPokemons.slice(0, limit);
 					}
 					return [
@@ -97,7 +102,11 @@ const PokedexPage: React.FC = () => {
 						setSearchPokemons={setSearchPokemons}
 						setIsSearching={setIsSearching}
 					/>
-					<IonButton expand="block" onClick={() => openModal()}>
+					<IonButton
+						disabled={!auth?.token}
+						expand="block"
+						onClick={() => openModal()}
+					>
 						Open
 					</IonButton>
 					{isSearching ? (

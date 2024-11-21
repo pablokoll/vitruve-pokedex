@@ -1,58 +1,81 @@
-import { IonContent, IonPage } from "@ionic/react";
+import {
+	IonContent,
+	IonPage
+} from "@ionic/react";
 import type React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import CustomForm from "../components/CustomForm";
 import { useAuth } from "../providers/AuthProvider";
+import type { Field } from "../shared/interfaces/form.interface";
+import type { CustomField } from "../shared/types/field.type";
 import { containerStyle } from "../styles/styles";
 
-const SignupPage: React.FC = () => {
-	const { useSignUp } = useAuth();
-	const signUp = useSignUp();
+const SignUp: React.FC = () => {
 	const history = useHistory();
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [error, setError] = useState<string | null>(null);
+	const { useSignUp } = useAuth();
+	const signup = useSignUp();
+	const [formData, setFormData] = useState<Record<string, CustomField>>({});
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		signUp({ username, password });
+		signup({
+			username: formData.username as string,
+			password: formData.password as string,
+		});
 		history.push("/pokedex");
-		setUsername("");
-		setPassword("");
 	};
 
 	return (
 		<IonPage>
 			<IonContent>
 				<div className={containerStyle}>
-					<form onSubmit={handleSubmit}>
-						<div>
-							<label htmlFor="username">Username:</label>
-							<input
-								type="text"
-								id="username"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								required
-							/>
-						</div>
-						<div>
-							<label htmlFor="password">Password:</label>
-							<input
-								type="password"
-								id="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
-						</div>
-						<button type="submit">Signup</button>
-						{error && <p>{error}</p>}
-					</form>
+					<CustomForm
+						formData={formData}
+						setFormData={setFormData}
+						handleFormSubmit={handleSubmit}
+						buttonName="Sign Up"
+						fields={fields}
+					/>
 				</div>
 			</IonContent>
 		</IonPage>
 	);
 };
 
-export default SignupPage;
+export default SignUp;
+
+const fields: Field[] = [
+	{
+		label: "Username",
+		type: "text",
+		required: true,
+		requiredOptions: {
+			maxlength: 20,
+			minlength: 3,
+		},
+		props: {
+			name: "username",
+			placeholder: "Username",
+			labelPlacement: "floating",
+			inputmode: "text",
+			errorText: "Error username",
+		},
+	},
+	{
+		label: "Password",
+		type: "password",
+		required: true,
+		requiredOptions: {
+			maxlength: 20,
+			minlength: 8,
+		},
+		props: {
+			name: "password",
+			placeholder: "Password",
+			labelPlacement: "floating",
+			inputmode: "text",
+			errorText: "Error password",
+		},
+	},
+];

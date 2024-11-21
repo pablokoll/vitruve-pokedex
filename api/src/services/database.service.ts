@@ -265,6 +265,26 @@ async function deletePokemon(
 	id: string,
 	userId: string,
 ): Promise<{ id: string; name: string; userId: string | null }> {
+	console.log("Deleting pokemon", id, userId);
+	await prisma.pokemonEvolution.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonGender.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonStat.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonType.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonAbility.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.favorite.deleteMany({
+		where: { pokemonId: id },
+	});
+
 	const deletedPokemon = await prisma.pokemon.delete({
 		where: { id, userId },
 		select: {

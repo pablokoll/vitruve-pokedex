@@ -17,10 +17,12 @@ import {
 } from "../services/database.service.js";
 import {
 	findAllPokemonApi,
+	findPokemonAbilities,
 	findPokemonIdWithDetailsApi,
 	findPokemonIdsWithDetailsApi,
 	findPokemonListWithDetailsApi,
 	findPokemonSearchByNameApi,
+	findPokemonTypes,
 } from "../services/pokemon.service.js";
 import type { PokemonData } from "../shared/interfaces/pokeapi.interface.js";
 import type { Pokemon } from "../shared/interfaces/pokemon.interface.js";
@@ -155,12 +157,14 @@ app.get("/", async (c) => {
 				skip: dbSkip,
 				take: dbTake > -1 ? dbTake : undefined,
 			});
-			const pokemonsDb = pokemonsDatabase.map((pokemon) => {
-				return {
-					name: pokemon.name,
-					url: `/pokemon/${pokemon.id}`,
-				};
-			});
+			const pokemonsDb = pokemonsDatabase
+				.map((pokemon) => {
+					return {
+						name: pokemon.name,
+						url: `/pokemon/${pokemon.id}`,
+					};
+				})
+				.sort((a, b) => a.name.localeCompare(b.name));
 			pokemons.push(...pokemonsDb);
 		}
 	}
@@ -197,7 +201,9 @@ app.get("/list", async (c) => {
 				skip: dbSkip,
 				take: dbTake,
 			});
-			pokemons.push(...pokemonsDatabase);
+			pokemons.push(
+				...pokemonsDatabase.sort((a, b) => a.name.localeCompare(b.name)),
+			);
 		}
 	}
 
@@ -249,6 +255,16 @@ app.get("/search/:name", async (c) => {
 	pokemons.push(...pokemonsApi);
 
 	return c.json(pokemons);
+});
+
+app.get("/types", async (c) => {
+	const types = await findPokemonTypes();
+	return c.json(types);
+});
+
+app.get("/abilities", async (c) => {
+	const types = await findPokemonAbilities();
+	return c.json(types);
 });
 
 app.get("/:pokemon", async (c) => {

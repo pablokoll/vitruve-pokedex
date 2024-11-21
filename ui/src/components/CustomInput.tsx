@@ -1,5 +1,6 @@
 import {
 	IonInput,
+	IonInputPasswordToggle,
 	IonSelect,
 	IonSelectOption,
 	IonTextarea,
@@ -32,7 +33,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
 		<>
 			{type === "text" || type === "number" || type === "url" ? (
 				<IonInput
-					autocomplete="nickname"
 					id={name}
 					name={name}
 					label={label}
@@ -44,6 +44,22 @@ const CustomInput: React.FC<CustomInputProps> = ({
 					{...requiredOptions}
 					{...restProps}
 				/>
+			) : type === "password" ? (
+				<IonInput
+					autocomplete="new-password"
+					id={name}
+					name={name}
+					label={label}
+					value={value as string}
+					type={type}
+					required={required}
+					placeholder={placeholder}
+					onIonChange={handleChange}
+					{...requiredOptions}
+					{...restProps}
+				>
+					<IonInputPasswordToggle slot="end" />
+				</IonInput>
 			) : type === "textarea" ? (
 				<IonTextarea
 					{...requiredOptions}
@@ -68,7 +84,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 					placeholder={placeholder}
 					interface="popover"
 					onKeyUpCapture={(e) => {
-						e.key === "Enter"
+						e.key === "Enter";
 					}}
 					{...requiredOptions}
 					{...restProps}

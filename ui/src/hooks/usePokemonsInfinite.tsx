@@ -39,14 +39,12 @@ const usePokemonsInfinite = (limit: number): UsePokemonsInfiniteResult => {
 
 	useEffect(() => {
 		const handleRefetch = () => {
-			console.log("Evento userAuthenticated detectado: haciendo refetch...");
 			refetch();
 		};
 
 		document.addEventListener("userAuthenticated", handleRefetch);
 		document.addEventListener("userNotAuthenticated", handleRefetch);
 
-		// Limpiar suscripción
 		return () => {
 			document.removeEventListener("userAuthenticated", handleRefetch);
 			document.removeEventListener("userNotAuthenticated", handleRefetch);

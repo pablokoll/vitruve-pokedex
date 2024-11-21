@@ -11,7 +11,7 @@ const FavoritePage: React.FC = () => {
 	const { favorites, updateFavorite } = useFavorites();
 	const { pokemons } = usePokemons(favorites || []);
 
-	if (!auth?.user) {
+	if (!auth?.token) {
 		return (
 			<IonPage>
 				<IonContent>

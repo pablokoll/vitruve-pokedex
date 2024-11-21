@@ -122,7 +122,7 @@ async function findPokemonSearchByNameApi(name: string) {
 		return pokemon.name.includes(name);
 	});
 
-	if(pokemonsFind.length === 0) {
+	if (pokemonsFind.length === 0) {
 		return [];
 	}
 	const pokemonDetailsPromises = pokemonsFind.map((pokemon) =>
@@ -139,12 +139,32 @@ async function findPokemonIdWithDetailsApi(id: string) {
 	return pokemons[0];
 }
 
+async function findPokemonTypes() {
+	const url = `${apiUrl}/type?limit=30`;
+	const response = await axios.get(url);
+	return response.data.results
+		.map((type: { name: string; url: string }) => type.name)
+		.sort((a: string, b: string) => a.localeCompare(b));
+}
+
+async function findPokemonAbilities() {
+	const url = `${apiUrl}/ability?limit=400`;
+	const response = await axios.get(url);
+	return response.data.results.map(
+		(type: { name: string; url: string }) => type.name,
+	).sort((a: string, b: string) => a.localeCompare(b));
+}
+
 export {
 	findAllPokemonApi,
+	findPokemonAbilities,
 	findPokemonGenderApi,
 	findPokemonIdApi,
 	findPokemonIdsWithDetailsApi,
 	findPokemonIdWithDetailsApi,
-	findPokemonListWithDetailsApi, findPokemonSearchByNameApi, findPokemonSpeciesApi
+	findPokemonListWithDetailsApi,
+	findPokemonSearchByNameApi,
+	findPokemonSpeciesApi,
+	findPokemonTypes
 };
 

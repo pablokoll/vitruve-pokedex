@@ -1,95 +1,53 @@
 import {
 	IonButton,
+	IonButtons,
 	IonContent,
-	IonInput,
-	IonInputPasswordToggle,
-	IonNote,
 	IonPage,
 	IonText,
 } from "@ionic/react";
 import type React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import CustomForm from "../components/CustomForm";
 import { useAuth } from "../providers/AuthProvider";
+import type { Field } from "../shared/interfaces/form.interface";
+import type { CustomField } from "../shared/types/field.type";
 import { containerStyle } from "../styles/styles";
 
 const SigninPage: React.FC = () => {
-	const history = useHistory(); 
+	const history = useHistory();
 	const { useSignIn } = useAuth();
 	const signin = useSignIn();
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [errors, setErrors] = useState({
-		username: "",
-		password: "",
-		auth: "",
-	});
+	const [formData, setFormData] = useState<Record<string, CustomField>>({});
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const formErrors = { username: "", password: "", auth: "" };
-
-		if (!username) formErrors.username = "Username is required";
-		if (!password) formErrors.password = "Password is required";
-		setErrors(formErrors);
-
-		if (formErrors.username || formErrors.password) return;
-
-		try {
-			signin({username, password});
-			history.push("/");
-			setUsername("");
-			setPassword("");
-		} catch (error) {
-			setErrors({
-				...formErrors,
-				auth: `${error}`,
-			});
-		}
+		signin({
+			username: formData.username as string,
+			password: formData.password as string,
+		});
+		history.push("/pokedex");
 	};
 
 	return (
 		<IonPage>
 			<IonContent>
 				<div className={containerStyle}>
-					<form id="signin-form" onSubmit={handleSubmit}>
-						<IonInput
-							type="text"
-							label="Username"
-							labelPlacement="floating"
-							counter={true}
-							maxlength={20}
-							onIonInput={(e) => setUsername(e.detail.value!)}
-							value={username}
-							className={errors.username ? "input-error" : ""}
-						/>
-						{errors.username && (
-							<IonNote color="danger">{errors.username}</IonNote>
-						)}
-
-						<IonInput
-							type="password"
-							label="Password"
-							labelPlacement="floating"
-							onIonInput={(e) => setPassword(e.detail.value!)}
-							value={password}
-							className={errors.password ? "input-error" : ""}
-						>
-							<IonInputPasswordToggle slot="end" />
-						</IonInput>
-						{errors.password && (
-							<IonNote color="danger">{errors.password}</IonNote>
-						)}
-
-						<IonButton form="signin-form" type="submit">
-							Sign In
+					<CustomForm
+						formData={formData}
+						setFormData={setFormData}
+						handleFormSubmit={handleSubmit}
+						buttonName="Sign In"
+						fields={fields}
+					/>
+					<IonText>
+						<p>Don't have an account?</p>
+					</IonText>
+					<IonButtons>
+						<IonButton expand="full" onClick={() => history.push("/signup")}>
+							Sign Up
 						</IonButton>
-						{errors.auth && (
-							<IonText color="danger">
-								<p>{errors.auth}</p>
-							</IonText>
-						)}
-					</form>
+					</IonButtons>
 				</div>
 			</IonContent>
 		</IonPage>
@@ -97,3 +55,38 @@ const SigninPage: React.FC = () => {
 };
 
 export default SigninPage;
+
+const fields: Field[] = [
+	{
+		label: "Username",
+		type: "text",
+		required: true,
+		requiredOptions: {
+			maxlength: 20,
+			minlength: 3,
+		},
+		props: {
+			name: "username",
+			placeholder: "Username",
+			labelPlacement: "floating",
+			inputmode: "text",
+			errorText: "Error username",
+		},
+	},
+	{
+		label: "Password",
+		type: "password",
+		required: true,
+		requiredOptions: {
+			maxlength: 20,
+			minlength: 8,
+		},
+		props: {
+			name: "password",
+			placeholder: "Password",
+			labelPlacement: "floating",
+			inputmode: "text",
+			errorText: "Error password",
+		},
+	},
+];
