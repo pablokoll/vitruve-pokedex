@@ -17,9 +17,12 @@ import {
 } from "../services/database.service.js";
 import {
 	findAllPokemonApi,
+	findPokemonAbilities,
 	findPokemonIdWithDetailsApi,
 	findPokemonIdsWithDetailsApi,
 	findPokemonListWithDetailsApi,
+	findPokemonSearchByNameApi,
+	findPokemonTypes,
 } from "../services/pokemon.service.js";
 import type { PokemonData } from "../shared/interfaces/pokeapi.interface.js";
 import type { Pokemon } from "../shared/interfaces/pokemon.interface.js";
@@ -153,13 +156,15 @@ app.get("/", async (c) => {
 			const pokemonsDatabase = await findAllPokemon(userId, {
 				skip: dbSkip,
 				take: dbTake > -1 ? dbTake : undefined,
-			})
-			const pokemonsDb = pokemonsDatabase.map((pokemon) => {
-				return {
-					name: pokemon.name,
-					url: `/pokemon/${pokemon.id}`
-				}
-			})
+			});
+			const pokemonsDb = pokemonsDatabase
+				.map((pokemon) => {
+					return {
+						name: pokemon.name,
+						url: `/pokemon/${pokemon.id}`,
+					};
+				})
+				.sort((a, b) => a.name.localeCompare(b.name));
 			pokemons.push(...pokemonsDb);
 		}
 	}
@@ -184,7 +189,6 @@ app.get("/list", async (c) => {
 
 	const pokemons: Pokemon[] = [];
 	let totalDatabasePokemons = 0;
-
 	if (c.get("username")) {
 		const userId = await getContextUserId(c);
 		totalDatabasePokemons = await countAllPokemons(userId);
@@ -197,7 +201,9 @@ app.get("/list", async (c) => {
 				skip: dbSkip,
 				take: dbTake,
 			});
-			pokemons.push(...pokemonsDatabase);
+			pokemons.push(
+				...pokemonsDatabase.sort((a, b) => a.name.localeCompare(b.name)),
+			);
 		}
 	}
 
@@ -232,6 +238,33 @@ app.get("/list/ids", async (c) => {
 		pokemons.push(...pokemonsApi);
 	}
 	return c.json(pokemons);
+});
+
+app.get("/search/:name", async (c) => {
+	const query = c.req.param("name");
+	if (!query?.length) {
+		return c.json({ error: "Pokémon query is required" }, 400);
+	}
+	const pokemons = [];
+	if (c.get("username")) {
+		const userId = await getContextUserId(c);
+		const pokemonsDatabase = await findAllPokemon(userId, { name: query });
+		pokemons.push(...pokemonsDatabase);
+	}
+	const pokemonsApi = await findPokemonSearchByNameApi(query);
+	pokemons.push(...pokemonsApi);
+
+	return c.json(pokemons);
+});
+
+app.get("/types", async (c) => {
+	const types = await findPokemonTypes();
+	return c.json(types);
+});
+
+app.get("/abilities", async (c) => {
+	const types = await findPokemonAbilities();
+	return c.json(types);
 });
 
 app.get("/:pokemon", async (c) => {

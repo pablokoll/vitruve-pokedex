@@ -23,7 +23,8 @@ interface UseFavoritesResult {
 }
 
 const useFavorites = (): UseFavoritesResult => {
-	const { isAuthenticated } = useAuth();
+	const { auth } = useAuth();
+	const queryClient = useQueryClient();
 	const {
 		data: favorites,
 		isError,
@@ -31,11 +32,9 @@ const useFavorites = (): UseFavoritesResult => {
 	} = useQuery<PokemonReference[]>({
 		queryKey: ["pokemons", "favorites"],
 		queryFn: fetchUserPokemonsFavorites,
-		enabled: isAuthenticated,
+		enabled: !!auth,
 		retry: 3,
 	});
-
-	const queryClient = useQueryClient();
 
 	const { mutate: toggleFavorite } = useMutation<
 		{ message: string },
@@ -50,7 +49,7 @@ const useFavorites = (): UseFavoritesResult => {
 		onError: (error, variables) => {
 			if (error.response?.statusText === "Unauthorized") {
 				const authListener = () => {
-					toggleFavorite({ id: variables.id, action: 'add' });
+					toggleFavorite({ id: variables.id, action: "add" });
 					document.removeEventListener("userAuthenticated", authListener);
 				};
 				document.addEventListener("userAuthenticated", authListener);
@@ -83,10 +82,10 @@ const useFavorites = (): UseFavoritesResult => {
 	}, [isError, refetch]);
 
 	useEffect(() => {
-		if (!isAuthenticated) {
+		if (!auth?.token) {
 			queryClient.setQueryData(["pokemons", "favorites"], []);
 		}
-	});
+	}, [queryClient, auth]);
 
 	return {
 		favorites,

@@ -1,4 +1,4 @@
-import type { AuthResponse, AuthUser } from "../shared/interfaces/auth.interface";
+import type { AuthResponse } from "../shared/interfaces/auth.interface";
 import { api } from "./api";
 
 export const signup = async (
@@ -23,10 +23,14 @@ export const signin = async (
 	return response.data;
 };
 
-export const me = async (): Promise<AuthUser | null> => {
-	const response = await api.get("/auth/me");
-	if(response.status === 401) {
+export const me = async (): Promise<AuthResponse | null> => {
+	try {
+		const response = await api.get("/auth/me");
+		if (response.status === 401) {
+			return null;
+		}
+		return response.data;
+	} catch (error) {
 		return null;
 	}
-	return response.data;
-}
+};

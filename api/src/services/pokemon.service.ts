@@ -50,12 +50,14 @@ async function findPokemonSpeciesApi(
 	const speciesPromises = pokemonsId.map((s) => axios.get(`${url}/${s}`));
 	const pokemonSpecies = await Promise.allSettled(speciesPromises);
 
-	return pokemonSpecies.map((response) => {
-		if (response.status === "fulfilled") {
-			return response.value.data;
-		}
-		return null;
-	}).filter((s) => s !== null) as SpeciesResponseData[];
+	return pokemonSpecies
+		.map((response) => {
+			if (response.status === "fulfilled") {
+				return response.value.data;
+			}
+			return null;
+		})
+		.filter((s) => s !== null) as SpeciesResponseData[];
 }
 
 async function findPokemonEvolutionChain(species: SpeciesResponseData[]) {
@@ -114,16 +116,55 @@ async function findPokemonIdsWithDetailsApi(ids: number[]) {
 	return pokemons;
 }
 
+async function findPokemonSearchByNameApi(name: string) {
+	const allPokemons = await findAllPokemonApi(-1);
+	const pokemonsFind = allPokemons.results.filter((pokemon) => {
+		return pokemon.name.includes(name);
+	});
+
+	if (pokemonsFind.length === 0) {
+		return [];
+	}
+	const pokemonDetailsPromises = pokemonsFind.map((pokemon) =>
+		findPokemonIdApi(pokemon.name),
+	);
+	const pokemonDetails = await Promise.all(pokemonDetailsPromises);
+	const pokemons = await findPokemonCharacteristicsApi(pokemonDetails);
+	return pokemons;
+}
+
 async function findPokemonIdWithDetailsApi(id: string) {
 	const pokemonDetails = await findPokemonIdApi(id);
 	const pokemons = await findPokemonCharacteristicsApi([pokemonDetails]);
 	return pokemons[0];
 }
 
+async function findPokemonTypes() {
+	const url = `${apiUrl}/type?limit=30`;
+	const response = await axios.get(url);
+	return response.data.results
+		.map((type: { name: string; url: string }) => type.name)
+		.sort((a: string, b: string) => a.localeCompare(b));
+}
+
+async function findPokemonAbilities() {
+	const url = `${apiUrl}/ability?limit=400`;
+	const response = await axios.get(url);
+	return response.data.results.map(
+		(type: { name: string; url: string }) => type.name,
+	).sort((a: string, b: string) => a.localeCompare(b));
+}
+
 export {
 	findAllPokemonApi,
+	findPokemonAbilities,
 	findPokemonGenderApi,
-	findPokemonIdApi, findPokemonIdsWithDetailsApi, findPokemonIdWithDetailsApi, findPokemonListWithDetailsApi,
-	findPokemonSpeciesApi
+	findPokemonIdApi,
+	findPokemonIdsWithDetailsApi,
+	findPokemonIdWithDetailsApi,
+	findPokemonListWithDetailsApi,
+	findPokemonSearchByNameApi,
+	findPokemonSpeciesApi,
+	findPokemonTypes
 };
 

@@ -2,16 +2,17 @@ import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { css } from "../../styled-system/css";
-import useFavorites from "../hooks/useFavorites";
-import type { Pokemon } from "../shared/interfaces/pokemon.interface";
+import type {
+	Pokemon,
+	PokemonListProps
+} from "../shared/interfaces/pokemon.interface";
 import PokemonCard from "./PokemonCard";
 
-interface PokemonListProps {
-	pokemonList: Pokemon[];
-}
-
-const PokemonList: React.FC<PokemonListProps> = ({ pokemonList }) => {
-	const { favorites, updateFavorite } = useFavorites();
+const PokemonList: React.FC<PokemonListProps> = ({
+	pokemonList,
+	favorites,
+	updateFavorite
+}) => {
 	const [pokemons, setPokemons] = useState<Pokemon[]>(pokemonList);
 
 	useEffect(() => {
@@ -19,34 +20,27 @@ const PokemonList: React.FC<PokemonListProps> = ({ pokemonList }) => {
 	}, [pokemonList]);
 
 	return (
-		<>
-			<IonGrid
-				className={css({
-					width: "100%",
-					display: "flex",
-					flexDirection: "column",
-				})}
-			>
-				{Array.from({ length: Math.ceil(pokemons.length / 3) }).map(
-					(_, rowIndex) => (
-						<IonRow
-							className={css({ width: "100%" })}
-							key={`row-${rowIndex}-${pokemons[rowIndex * 3]?.id}`}
-						>
-							{pokemons.slice(rowIndex * 3, rowIndex * 3 + 3).map((pokemon) => (
-								<IonCol key={pokemon.id} size="4">
-									<PokemonCard
-										pokemon={pokemon}
-										favorites={favorites ? favorites : []}
-										updateFavorite={updateFavorite}
-									/>
-								</IonCol>
-							))}
-						</IonRow>
-					),
-				)}
-			</IonGrid>
-		</>
+		<IonGrid fixed={true} className={css({ height: "100vh" })}>
+			<IonRow class="ion-justify-content-start ion-align-items-center">
+				{pokemons.map((pokemon) => (
+					<IonCol
+						class="ion-padding"
+						key={`${pokemon.name}-${pokemon.id}`}
+						sizeXs="12"
+						sizeSm="6"
+						sizeMd="4"
+						sizeLg="3"
+						sizeXl="2"
+					>
+						<PokemonCard
+							pokemon={pokemon}
+							favorites={favorites ? favorites : []}
+							updateFavorite={updateFavorite}
+						/>
+					</IonCol>
+				))}
+			</IonRow>
+		</IonGrid>
 	);
 };
 

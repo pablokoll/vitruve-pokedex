@@ -11,16 +11,11 @@ import {
 	useContext,
 	useEffect,
 	useMemo,
-	useState,
 } from "react";
-import { useHistory } from "react-router";
 import { api } from "../api/api";
 import { me, signin, signup } from "../api/auth";
-import { AUTH_LOCAL_STORAGE_KEY, AUTH_QUERY_KEY } from "../constants";
-import type {
-	AuthResponse,
-	AuthUser,
-} from "../shared/interfaces/auth.interface";
+import { AUTH_QUERY_KEY } from "../constants";
+import type { AuthResponse } from "../shared/interfaces/auth.interface";
 
 interface UserForm {
 	username: string;
@@ -28,13 +23,11 @@ interface UserForm {
 }
 
 interface AuthContextType {
-	auth: AuthResponse | null;
+	auth: AuthResponse | null | undefined;
 	isAuthenticated: boolean;
-	setAuth: (authData: AuthResponse | null) => void;
 	useSignUp: () => UseMutateFunction<AuthResponse, unknown, UserForm, unknown>;
 	useSignIn: () => UseMutateFunction<AuthResponse, unknown, UserForm, unknown>;
 	useSignOut: () => () => void;
-	useUser: () => AuthUser | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,17 +37,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-	const authStorage = localStorage.getItem(AUTH_LOCAL_STORAGE_KEY);
-	const [auth, setAuth_] = useState(
-		authStorage ? JSON.parse(authStorage) : null,
-	);
-	const history = useHistory();
 	const queryClient = useQueryClient();
 
-	const setAuth = (auth: AuthResponse | null) => {
-		setAuth_(auth);
-	};
-
+	const { data: auth, isLoading, isFetching, isPending, status } = useQuery<AuthResponse | null>({
+		queryKey: [AUTH_QUERY_KEY],
+		queryFn: me,
+		staleTime: Number.POSITIVE_INFINITY,
+	});
 	const useSignUp = (): UseMutateFunction<
 		AuthResponse,
 		Error,
@@ -70,8 +59,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			mutationFn: ({ username, password }: UserForm) =>
 				signup(username, password),
 			onSuccess: (data: AuthResponse) => {
+				localStorage.setItem("token", data.token);
+				api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+
+				document.dispatchEvent(new Event("userAuthenticated"));
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
-				setAuth(data);
 			},
 			onError: (error: Error) => {
 				console.error(`Error signing up: ${error.message}`);
@@ -96,11 +88,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			mutationFn: ({ username, password }: UserForm) =>
 				signin(username, password),
 			onSuccess: (data: AuthResponse) => {
+				localStorage.setItem("token", data.token);
+				api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+
+				document.dispatchEvent(new Event("userAuthenticated"));
 				queryClient.setQueryData([AUTH_QUERY_KEY], data);
-				setAuth(data);
 			},
 			onError: (error: Error) => {
-				console.error(`Error signing up: ${error.message}`);
+				console.error(`Error signing in: ${error.message}`);
 			},
 		});
 
@@ -109,47 +104,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	const useSignOut = (): (() => void) => {
 		const onSignOut = useCallback(() => {
-			queryClient.setQueryData([AUTH_QUERY_KEY], null);
-			setAuth(null);
-			history.push("/pokedex");
+			api.defaults.headers.common.Authorization = null;
+			queryClient.setQueryData([AUTH_QUERY_KEY], null)
+			localStorage.removeItem("token");
+			document.dispatchEvent(new Event("userNotAuthenticated"));
 		}, []);
 
 		return onSignOut;
 	};
 
-	const useUser = (): AuthUser | null => {
-		const { data: user } = useQuery<AuthUser | null>({
-			queryKey: [AUTH_QUERY_KEY],
-			queryFn: async (): Promise<AuthUser | null> => me(),
-			initialData: auth,
-			staleTime: Number.POSITIVE_INFINITY,
-		});
-
-		return user ?? null;
-	};
-
-	const user = useUser();
 	useEffect(() => {
-		if (auth?.token && user) {
-			api.defaults.headers.common.Authorization = `Bearer  ${auth.token}`;
-			localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, JSON.stringify(auth));
-			document.dispatchEvent(new Event("userAuthenticated"))
-		} else {
-			api.defaults.headers.common.Authorization = null;
-			localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
+		const token = localStorage.getItem("token");
+		if (token) {
+			api.defaults.headers.common.Authorization = `Bearer ${token}`;
+			queryClient.setQueryData([AUTH_QUERY_KEY], { token });
 		}
-	}, [auth, user]);
+	}, [auth]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const contextValue = useMemo(
 		() => ({
 			auth,
-			setAuth,
-			isAuthenticated: !!auth,
+			isAuthenticated: !!auth && !isLoading,
 			useSignUp,
 			useSignIn,
 			useSignOut,
-			useUser,
 		}),
 		[auth],
 	);

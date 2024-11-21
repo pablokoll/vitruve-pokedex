@@ -10,7 +10,6 @@ export interface CreatePokemonDto {
 	sprite?: string;
 	types: string[];
 	stats: PokemonStatDto[];
-	userId: string;
 }
 
 export interface PokemonStatDto {

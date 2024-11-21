@@ -15,6 +15,6 @@ export const containerStyle = css({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "start",
-  padding: "10",
-  height: "100%",
+  padding: "10px",           // Asegurado de que tenga la unidad
+  minHeight: "100vh",
 });

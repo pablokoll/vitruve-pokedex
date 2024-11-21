@@ -54,7 +54,7 @@ async function countAllPokemons(userId: string): Promise<number> {
 
 async function findAllPokemon(
 	userId: string,
-	params?: { ids?: string[]; skip?: number; take?: number },
+	params?: { ids?: string[]; name?: string; skip?: number; take?: number },
 ): Promise<Pokemon[]> {
 	const prismaParams: Prisma.PokemonFindManyArgs = {
 		where: {
@@ -73,6 +73,10 @@ async function findAllPokemon(
 		prismaParams.where.id = {
 			in: params.ids,
 		};
+	}
+	if (params?.name) {
+		prismaParams.where = prismaParams.where || {};
+		prismaParams.where.name = { contains: params.name };
 	}
 	if (params?.skip) {
 		prismaParams.skip = params.skip;
@@ -95,7 +99,7 @@ async function findPokemon(
 	if (name) {
 		whereParams = { name_userId: { name, userId } };
 	}
-	if(!whereParams) {
+	if (!whereParams) {
 		throw new Error("Invalid parameters");
 	}
 	const pokemon = await prisma.pokemon.findUnique({
@@ -261,6 +265,26 @@ async function deletePokemon(
 	id: string,
 	userId: string,
 ): Promise<{ id: string; name: string; userId: string | null }> {
+	console.log("Deleting pokemon", id, userId);
+	await prisma.pokemonEvolution.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonGender.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonStat.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonType.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.pokemonAbility.deleteMany({
+		where: { pokemonId: id },
+	});
+	await prisma.favorite.deleteMany({
+		where: { pokemonId: id },
+	});
+
 	const deletedPokemon = await prisma.pokemon.delete({
 		where: { id, userId },
 		select: {

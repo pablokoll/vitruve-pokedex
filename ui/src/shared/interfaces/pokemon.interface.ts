@@ -2,6 +2,13 @@ import type { UseMutationResult } from "@tanstack/react-query";
 
 export interface PokemonListProps {
 	pokemonList: Pokemon[];
+	favorites: PokemonReference[] | undefined;
+	updateFavorite: UseMutationResult<
+		{ message: string },
+		Error,
+		{ id: string; action?: "add" },
+		unknown
+	>["mutate"];
 }
 
 export interface PokemonCardProps {
@@ -27,6 +34,7 @@ export interface Pokemon {
 	height?: number;
 	weight?: number;
 	category?: string;
+	description?: string;
 	sprite?: string;
 	userId?: string;
 	user?: User;
