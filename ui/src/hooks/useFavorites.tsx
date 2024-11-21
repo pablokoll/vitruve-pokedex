@@ -11,6 +11,7 @@ import type {
 	Pokemon,
 	PokemonReference,
 } from "../shared/interfaces/pokemon.interface";
+import useNetworkStatus from "./useNetworkStatus";
 
 interface UseFavoritesResult {
 	favorites: PokemonReference[] | undefined;
@@ -24,6 +25,7 @@ interface UseFavoritesResult {
 
 const useFavorites = (): UseFavoritesResult => {
 	const { auth } = useAuth();
+	const isOnline = useNetworkStatus()
 	const queryClient = useQueryClient();
 	const {
 		data: favorites,
@@ -32,7 +34,7 @@ const useFavorites = (): UseFavoritesResult => {
 	} = useQuery<PokemonReference[]>({
 		queryKey: ["pokemons", "favorites"],
 		queryFn: fetchUserPokemonsFavorites,
-		enabled: !!auth,
+		enabled: !!auth && isOnline,
 		retry: 3,
 	});
 
