@@ -18,7 +18,7 @@ import { useAuth } from "../providers/AuthProvider";
 import type { Pokemon } from "../shared/interfaces/pokemon.interface";
 import { containerStyle } from "../styles/styles";
 
-const PokedexPage: React.FC = () => {
+const PokemonsPage: React.FC = () => {
 	const limit = 12;
 	const [allPokemons, setAllPokemons] = useState<Pokemon[]>([]);
 	const [visiblePokemons, setVisiblePokemons] = useState<Pokemon[]>([]);
@@ -135,4 +135,4 @@ const PokedexPage: React.FC = () => {
 	);
 };
 
-export default PokedexPage;
+export default PokemonsPage;

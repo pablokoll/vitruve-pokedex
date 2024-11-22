@@ -32,8 +32,8 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 import { css } from "../styled-system/css";
 import FavoritePage from "./pages/FavoritePage";
-import PokedexPage from "./pages/PokedexPage";
 import PokemonDetails from "./pages/PokemonDetails";
+import PokemonsPage from "./pages/PokemonsPage";
 import SigninPage from "./pages/SignInPage";
 import SignupPage from "./pages/SignUpPage";
 import TeamPage from "./pages/TeamPage";
@@ -53,7 +53,7 @@ const App: React.FC = () => (
 					})}
 				>
 					<IonRouterOutlet>
-						<Route exact path="/pokedex" component={PokedexPage} />
+						<Route exact path="/pokedex" component={PokemonsPage} />
 						<Route exact path="/favorites" component={FavoritePage} />
 						<Route exact path="/team" component={TeamPage} />
 						<Route exact path="/signin" component={SigninPage} />
