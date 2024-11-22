@@ -7,6 +7,7 @@ export const queryClient = new QueryClient({
 			refetchOnReconnect: true,
 			refetchOnMount: false,
 			refetchOnWindowFocus: false,
+			staleTime: 1000 * 1440 * 7, // 7 days 
 		},
 	},
 });

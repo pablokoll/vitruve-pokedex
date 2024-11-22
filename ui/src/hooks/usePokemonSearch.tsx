@@ -7,7 +7,6 @@ const usePokemonSearch = (name: string) => {
 		queryKey: ["pokemonSearch", name],
 		queryFn: () => fetchPokemonSearchByName(name),
 		enabled: !!name,
-        staleTime: 1000 * 60 * 5,
 	});
 };
 

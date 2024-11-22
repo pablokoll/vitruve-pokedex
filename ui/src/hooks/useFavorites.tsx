@@ -35,7 +35,6 @@ const useFavorites = (): UseFavoritesResult => {
 		queryKey: ["pokemons", "favorites"],
 		queryFn: fetchUserPokemonsFavorites,
 		enabled: !!auth && isOnline,
-		retry: 3,
 	});
 
 	const { mutate: toggleFavorite } = useMutation<

@@ -34,7 +34,6 @@ const usePokemonsInfinite = (limit: number): UsePokemonsInfiniteResult => {
 			}
 		},
 		initialPageParam: 0,
-		staleTime: Number.POSITIVE_INFINITY,
 	});
 
 	useEffect(() => {
