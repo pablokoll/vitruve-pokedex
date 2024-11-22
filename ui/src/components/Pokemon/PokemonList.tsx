@@ -1,11 +1,11 @@
 import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { css } from "../../styled-system/css";
+import { css } from "../../../styled-system/css";
 import type {
 	Pokemon,
 	PokemonListProps
-} from "../shared/interfaces/pokemon.interface";
+} from "../../shared/interfaces/pokemon.interface";
 import PokemonCard from "./PokemonCard";
 
 const PokemonList: React.FC<PokemonListProps> = ({

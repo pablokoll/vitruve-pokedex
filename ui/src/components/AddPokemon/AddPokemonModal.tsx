@@ -8,17 +8,17 @@ import {
 	IonToolbar,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { useAbilities } from "../hooks/useAbilities";
-import useAddPokemon from "../hooks/useAddPokemon";
-import { useGenders } from "../hooks/useGenders";
-import { useTypes } from "../hooks/useTypes";
+import { useAbilities } from "../../hooks/useAbilities";
+import useAddPokemon from "../../hooks/useAddPokemon";
+import { useGenders } from "../../hooks/useGenders";
+import { useTypes } from "../../hooks/useTypes";
 import type {
 	CreatePokemonDto,
 	PokemonStatDto,
-} from "../shared/dto/create-pokemon.dto";
-import type { Field } from "../shared/interfaces/form.interface";
-import type { CustomField } from "../shared/types/field.type";
-import CustomForm from "./CustomForm";
+} from "../../shared/dto/create-pokemon.dto";
+import type { Field } from "../../shared/interfaces/form.interface";
+import type { CustomField } from "../../shared/types/field.type";
+import CustomForm from "../Forms/CustomForm";
 
 const AddPokemonModal = ({
 	dismiss,

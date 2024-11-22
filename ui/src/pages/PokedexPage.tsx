@@ -9,9 +9,9 @@ import {
 import type React from "react";
 import { useEffect, useState } from "react";
 import { css } from "../../styled-system/css";
-import AddPokemonModal from "../components/AddPokemonModal";
-import PokemonList from "../components/PokemonList";
-import SearchBar from "../components/SearchBar";
+import AddPokemonModal from "../components/AddPokemon/AddPokemonModal";
+import SearchBar from "../components/AddPokemon/SearchBar";
+import PokemonList from "../components/Pokemon/PokemonList";
 import useFavorites from "../hooks/useFavorites";
 import usePokemonsInfinite from "../hooks/usePokemonsInfinite";
 import { useAuth } from "../providers/AuthProvider";

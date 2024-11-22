@@ -1,8 +1,8 @@
 import { IonSearchbar as IonSearchBar } from "@ionic/react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import usePokemonSearch from "../hooks/usePokemonSearch";
-import type { Pokemon } from "../shared/interfaces/pokemon.interface";
+import usePokemonSearch from "../../hooks/usePokemonSearch";
+import type { Pokemon } from "../../shared/interfaces/pokemon.interface";
 
 interface SearchBarProps {
 	setSearchPokemons: (pokemons: Pokemon[]) => void;

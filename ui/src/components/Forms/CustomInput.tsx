@@ -7,8 +7,8 @@ import {
 } from "@ionic/react";
 import { caretDownSharp } from "ionicons/icons";
 import type React from "react";
-import type { Field } from "../shared/interfaces/form.interface";
-import type { CustomField } from "../shared/types/field.type";
+import type { Field } from "../../shared/interfaces/form.interface";
+import type { CustomField } from "../../shared/types/field.type";
 import InputStats from "./InputStats";
 
 interface CustomInputProps {

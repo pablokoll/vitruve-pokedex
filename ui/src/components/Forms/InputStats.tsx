@@ -1,7 +1,7 @@
 import { IonInput, IonLabel } from "@ionic/react";
 import type React from "react";
 import { useState } from "react";
-import type { CustomField } from "../shared/types/field.type";
+import type { CustomField } from "../../shared/types/field.type";
 
 interface InputStatsProps {
 	onChange: (name: string, value: CustomField) => void;

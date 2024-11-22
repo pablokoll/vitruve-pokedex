@@ -2,8 +2,8 @@ import { IonButton } from "@ionic/react";
 import type { AxiosError } from "axios";
 import type React from "react";
 import type { FormEvent } from "react";
-import type { Field } from "../shared/interfaces/form.interface";
-import type { CustomField } from "../shared/types/field.type";
+import type { Field } from "../../shared/interfaces/form.interface";
+import type { CustomField } from "../../shared/types/field.type";
 import CustomInput from "./CustomInput";
 
 interface CustomFormProps {

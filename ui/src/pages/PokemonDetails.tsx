@@ -2,7 +2,7 @@ import { IonButton, IonButtons, IonContent, IonPage } from "@ionic/react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import CustomForm from "../components/CustomForm";
+import CustomForm from "../components/Forms/CustomForm";
 import useDeletePokemon from "../hooks/useDeletePokemon";
 import useEditPokemon from "../hooks/useEditPokemon";
 import usePokemon from "../hooks/usePokemon";
@@ -13,7 +13,7 @@ import type { Field } from "../shared/interfaces/form.interface";
 import type { CustomField } from "../shared/types/field.type";
 import { containerStyle } from "../styles/styles";
 
-const PokemonPage: React.FC = () => {
+const PokemonDetails: React.FC = () => {
 	const { auth } = useAuth();
 	const { pokemonName } = useParams<{ pokemonName: string }>();
 	const { pokemon } = usePokemon(pokemonName);
@@ -189,7 +189,7 @@ const PokemonPage: React.FC = () => {
 	);
 };
 
-export default PokemonPage;
+export default PokemonDetails;
 
 const fields: Field[] = [
 	{

@@ -5,7 +5,7 @@ import {
 import type React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import CustomForm from "../components/CustomForm";
+import CustomForm from "../components/Forms/CustomForm";
 import { useAuth } from "../providers/AuthProvider";
 import type { Field } from "../shared/interfaces/form.interface";
 import type { CustomField } from "../shared/types/field.type";

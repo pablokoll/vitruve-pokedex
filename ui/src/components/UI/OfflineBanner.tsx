@@ -1,4 +1,4 @@
-import useNetwork from "../hooks/useNetworkStatus";
+import useNetwork from "../../hooks/useNetworkStatus";
 
 const OfflineBanner = () => {
 	const isOnline = useNetwork();

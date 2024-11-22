@@ -6,7 +6,7 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
-import Navbar from "./components/NavBar";
+import Navbar from "./components/Navigation/NavBar";
 
 import "./index.css";
 import "./theme/variables.css";
@@ -33,7 +33,7 @@ import "@ionic/react/css/palettes/dark.system.css";
 import { css } from "../styled-system/css";
 import FavoritePage from "./pages/FavoritePage";
 import PokedexPage from "./pages/PokedexPage";
-import PokemonPage from "./pages/PokemonPage";
+import PokemonDetails from "./pages/PokemonDetails";
 import SigninPage from "./pages/SignInPage";
 import SignupPage from "./pages/SignUpPage";
 import TeamPage from "./pages/TeamPage";
@@ -58,7 +58,7 @@ const App: React.FC = () => (
 						<Route exact path="/team" component={TeamPage} />
 						<Route exact path="/signin" component={SigninPage} />
 						<Route exact path="/signup" component={SignupPage} />
-						<Route exact path="/pokedex/:pokemonName" component={PokemonPage} />
+						<Route exact path="/pokedex/:pokemonName" component={PokemonDetails} />
 						<Redirect exact from="/" to="/pokedex" />
 					</IonRouterOutlet>
 				</IonPage>

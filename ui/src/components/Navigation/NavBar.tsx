@@ -6,11 +6,11 @@ import {
 	IonToolbar,
 } from "@ionic/react";
 import type React from "react";
-import { css } from "../../styled-system/css";
-import useIsMobile from "../hooks/useMobile";
-import useNetworkStatus from "../hooks/useNetworkStatus";
-import { routesLinks } from "../routes";
-import RouteItem from "../routes/Route";
+import { css } from "../../../styled-system/css";
+import useIsMobile from "../../hooks/useMobile";
+import useNetworkStatus from "../../hooks/useNetworkStatus";
+import { routesLinks } from "../../routes";
+import RouteItem from "../../routes/Route";
 import Menu from "./Menu";
 
 const Navbar: React.FC = () => {

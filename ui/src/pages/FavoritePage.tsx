@@ -1,6 +1,6 @@
 import { IonContent, IonPage, IonText } from "@ionic/react";
 import type React from "react";
-import PokemonList from "../components/PokemonList";
+import PokemonList from "../components/Pokemon/PokemonList";
 import useFavorites from "../hooks/useFavorites";
 import { usePokemons } from "../hooks/usePokemons";
 import { useAuth } from "../providers/AuthProvider";
